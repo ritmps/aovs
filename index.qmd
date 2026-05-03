@@ -32,7 +32,6 @@ Let's examine the following problem -
 By _natural image_ we mean an image of a real-world scene as captured by a photographic camera.
 
 By _relighting_ we mean the process of changing the lighting conditions of that image, $I_\text{nat}$, by altering the intensity, direction, color, and other properties of the light sources in the scene. This results in a new image, $I'_\text{nat}$, that appears as if it were captured under the new lighting condition, $L_\text{rel}$ [@senDualPhotography2005].
-also @wickham2015, chap. 1].
 
 We can think of the function that performs this relighting operation as a mapping from the original image, $I_\text{nat}$, and the new lighting condition, $L_\text{rel}$, to the relit image, $I'_\text{nat}$ —
 
