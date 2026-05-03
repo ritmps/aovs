@@ -62,7 +62,7 @@ Images are fundamentally functions mapping spatial coordinates to intensities or
   * $N = F(I; \theta_N)$, etc.
 * **Transformations and Mappings:** Use uppercase Greek letters or Calligraphic letters for high-level operators.
   * $\mathcal{R}(I; L_\text{relight})$ for the relighting operation.
-  * $L_\text{relight}$ (or $L_r$) for the target lighting condition.
+  * $L_\text{rel}$ (or $L_r$) for the target lighting condition.
 
 ## 5. Operators and Transformations
 When treating images as states (rather than just functions of coordinates), use operator or functional notation.
@@ -82,7 +82,7 @@ Following Hartley and Zisserman's *Multiple View Geometry* conventions:
 * $\mathbf{P} = \mathbf{K} [\mathbf{R} \mid \mathbf{t}] \in \mathbb{R}^{3 \times 4}$: The full camera projection matrix.
 
 ## 7. Subscript and Superscript Conventions
-* **Subscripts:** Reserve **exclusively** for indexing (e.g., $i, j, k$ for pixels, $c$ for color channels, $t$ for time frames). **Do not** use subscripts to denote image types (e.g., avoid $I_{natural}$).
+* **Subscripts:** Usually for indexing (e.g., $i, j, k$ for pixels, $c$ for color channels, $t$ for time frames). But in some cases, subscripts can also denote metadata or source descriptors when font styles are insufficient (e.g., $I_\text{nat}$ for natural images).
 * **Superscripts:** Reserve for mathematical operations ($^\top$, $^{-1}$), distinguishing coordinate frames (e.g., $\mathbf{X}^{(c)}$), or metadata/source descriptors when font styles are insufficient (e.g., $\mathcal{I}^{(captured)}$).
 * **Primes:** Use $I'$ to denote a "transformed" or "next-state" version of $I$ after an operation.
 

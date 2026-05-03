@@ -11,6 +11,18 @@ authors:
 bibliography: references.bib
 ---
 
+::: {.callout-warning}
+## Work in Progress
+This document is a work in progress and represents some current thinking in our lab on the estimation and use of Arbitrary Output Variables (AOVs) for natural images.
+
+Don't take any of it seriously yet and feel free to reach out if you have magically discovered this in the wild and want to chat about it.
+
+Despite the fact that there is a `gemini.md` file in the repository, rest assured that it is only there to help me organize some thoughts on notation, and to help dig out some syntax and formatting gotchas that I have experienced using Quarto and Mermaid.
+
+The thoughts are AI-Free.
+:::
+
+
 ## Relighting
 
 Let's examine the following problem -
@@ -154,7 +166,7 @@ graph LR
     N["$$\hat{N}$$"]
     A["$$\hat{A}$$"]
     L["$$L_\text{rel}$$"]
-    R["$$\mathcal{R}[\hat{N}, \hat{A}; L_relight]$$"]
+    R["$$\mathcal{R}[\hat{N}, \hat{A}; L_\text{rel}]$$"]
     O["$$I'_\text{nat}$$"]
 
     I --> D
