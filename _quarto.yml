@@ -3,7 +3,6 @@ project:
 
 manuscript:
   article: index.qmd
-  notebook-links: false
   resources: 
     - "!GEMINI.md"
 
@@ -11,6 +10,7 @@ format:
   html:
     css: style.css
     notebook-links: false
+    notebook-view: false
     comments:
       hypothesis: true
   docx: default
