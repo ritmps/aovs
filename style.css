@@ -19,45 +19,117 @@
   --rit-yellow: #F6BE00;
 }
 
-/* Aggressive header styling */
+/* Global Typography & Links */
+body {
+  color: var(--rit-black);
+}
+
+a {
+  color: var(--rit-teal);
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  color: var(--rit-orange);
+  text-decoration: underline;
+}
+
+/* Header Styling */
 header#title-block-header, 
 .quarto-title-banner,
-.quarto-title-block,
-.quarto-title-block.default {
+.quarto-title-block {
   background-color: var(--rit-orange) !important;
   color: var(--rit-white) !important;
   border: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  padding: 3em 2em !important;
+  margin-bottom: 3em !important;
 }
 
-/* Ensure all text inside the title block is white */
-#title-block-header *,
+header#title-block-header *,
 .quarto-title-block *,
 .quarto-title-banner * {
   color: var(--rit-white) !important;
 }
 
-/* Specific metadata styling */
 .quarto-title-meta-heading {
-  color: var(--rit-white) !important;
-  opacity: 0.9;
   text-transform: uppercase;
-  font-size: 0.8em;
-  font-weight: bold;
+  font-size: 0.75em;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  opacity: 0.8;
 }
 
-.quarto-title-meta-contents p,
-.quarto-title-meta-contents a {
-  color: var(--rit-white) !important;
+/* Sidebar & TOC */
+#quarto-sidebar, 
+#quarto-margin-sidebar,
+.sidebar nav,
+nav#TOC {
+  font-size: 0.9em;
+  color: var(--rit-cool-gray-dark);
 }
 
-.quarto-title-meta-contents a {
-  text-decoration: underline;
+nav#TOC h2 {
+  color: var(--rit-black);
+  font-size: 1.1em;
+  font-weight: 600;
+  border-bottom: 2px solid var(--rit-orange);
+  padding-bottom: 0.5em;
+  margin-bottom: 1em;
 }
 
-/* Clean up spacing */
-header#title-block-header {
-  padding-top: 3em;
-  padding-bottom: 3em;
-  margin-bottom: 2em;
+nav#TOC ul {
+  padding-left: 1em;
+}
+
+nav#TOC a {
+  color: var(--rit-cool-gray-dark);
+}
+
+nav#TOC a:hover {
+  color: var(--rit-orange);
+}
+
+/* Blockquotes & Notes */
+blockquote {
+  border-left: 5px solid var(--rit-orange);
+  background-color: var(--rit-warm-gray-light);
+  padding: 1em 1.5em;
+  margin: 2em 0;
+  font-style: italic;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Citations */
+.citation, 
+.footnote-ref {
+  color: var(--rit-purple);
+  font-weight: 600;
+}
+
+/* Mermaid Customization via CSS */
+.mermaid svg {
+  font-family: inherit !important;
+}
+
+.mermaid .node rect,
+.mermaid .node circle,
+.mermaid .node polygon {
+  fill: var(--rit-white) !important;
+  stroke: var(--rit-orange) !important;
+  stroke-width: 2px !important;
+}
+
+.mermaid .edgePath path {
+  stroke: var(--rit-cool-gray-dark) !important;
+}
+
+.mermaid .label {
+  color: var(--rit-black) !important;
+}
+
+/* Footer / Metadata area at bottom */
+.quarto-title-meta-contents p {
+  margin-bottom: 0.2em;
 }
