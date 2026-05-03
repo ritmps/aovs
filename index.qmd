@@ -5,8 +5,7 @@ authors:
     email: flip@rit.edu
     url: https://flipphillips.com/
     affiliations:
-      - name: Rochester Institute of Technology
-        department: Motion Picture Science
+      - name: Motion Picture Science, Rochester Institute of Technology
     roles: writing
     corresponding: true
 bibliography: references.bib
