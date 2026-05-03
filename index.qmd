@@ -35,7 +35,7 @@ By _relighting_ we mean the process of changing the lighting conditions of that 
 
 We can think of the function that performs this relighting operation as a mapping from the original image, $I_\text{nat}$, and the new lighting condition, $L_\text{rel}$, to the relit image, $I'_\text{nat}$ —
 
-$$I'_\text{nat} = \mathcal{R}[I_\text{nat}; L_\text{rel}]$$
+$$I'_\text{nat} = \mathcal{R}[I_\text{nat}; L_\text{rel}]$$ {#eq-relighting}
 
 The primary difficulty here is that the captured image, $I_\text{nat}$, is a 2D projection of a 3D scene whose $RGB$ pixel values contain the complex interactions between light and materials.^[There is a 'unbaking a cake' analogy here that we could deploy for explanation.]
 
@@ -49,9 +49,9 @@ With multiple images and depth information, the iPhone's software can better est
 
 If we have access to depth, we can simulate depth of field by blurring the image based on the depth values. We can estimate the depth via stereopsis between the multiple cameras combined with the somewhat coarse depth information from a single depth sensor.
 
-$$\hat{D} = F(I_1, I_2, \dots, I_m, I_d; \theta_D)$$
+$$\hat{D} = F(I_1, I_2, \dots, I_m, I_d; \theta_D)$$ {#eq-depth-est}
 
-Here, the functional $F$ uses the images and coarse depth sensor information to estimate the depth at each pixel, $\hat{D}$.
+Here, the functional $F$ in @eq-depth-est uses the images and coarse depth sensor information to estimate the depth at each pixel, $\hat{D}$.
 
 This is a start and an excellent solution for depth-related aesthetics, but it still doesn't give us all the information we need to solve the relighting problem. To relight the image, we also need to estimate the material properties of the scene, such as the albedo and specular reflectance. To understand this better, let's consider the use of synthetic images.
 
@@ -124,34 +124,34 @@ graph LR
 
 Here, $\hat{N}$ and $\hat{A}$ are the estimated normal and albedo maps, respectively, which are predicted from the input natural image $I_\text{nat}$. We run into an interesting problem here - how do we get the components necessary for deriving $\hat{N}$ and $\hat{A}$ from the input image? If we decide to go directly from $I_\text{nat} $ to $\hat{N}$ and $\hat{A}$, we are essentially treating the problem as a black-box regression problem, where we are trying to learn a direct mapping from the input image to the AOVs.
 
-$$ \hat{N} = F(I_\text{nat}; \theta_N) $$
+$$ \hat{N} = F(I_\text{nat}; \theta_N) $$ {#eq-normal-direct}
 
 Perhaps it would make sense to work from depth information to surface normals, as depth estimation from a single image is a well-studied problem in computer vision. We could first estimate the depth map, $\hat{D}$, from the input image, and then use the depth map to compute the surface normals.
 
-$$ \hat{D} = F(I_\text{nat}; \theta_D) $$
+$$ \hat{D} = F(I_\text{nat}; \theta_D) $$ {#eq-depth-direct}
 
-$$ \hat{N} = F(\hat{D}; \theta_N) $$
+$$ \hat{N} = F(\hat{D}; \theta_N) $$ {#eq-normal-from-depth}
 
-$$ \hat{N} = F(F(I_\text{nat}; \theta_D); \theta_N) $$
+$$ \hat{N} = F(F(I_\text{nat}; \theta_D); \theta_N) $$ {#eq-normal-composite}
 
-This approach has the advantage of breaking down the problem into two stages, which may be easier to solve than trying to learn a direct mapping from the input image to the AOVs. However, it also introduces additional sources of error, as any errors in the depth estimation will propagate to the surface normal estimation and ultimately to the relighting results.
+This approach (@eq-normal-composite) has the advantage of breaking down the problem into two stages (@eq-depth-direct and @eq-normal-from-depth), which may be easier to solve than trying to learn a direct mapping from the input image to the AOVs (@eq-normal-direct). However, it also introduces additional sources of error, as any errors in the depth estimation will propagate to the surface normal estimation and ultimately to the relighting results.
 
 To compute the normals from the depth map, we typically use the spatial gradients $\nabla \hat{D}$:
 
-$$ \hat{N} = F(\nabla \hat{D}; \theta_N) = F(\nabla F(I_\text{nat}; \theta_D); \theta_N) $$
+$$ \hat{N} = F(\nabla \hat{D}; \theta_N) = F(\nabla F(I_\text{nat}; \theta_D); \theta_N) $$ {#eq-normal-gradient}
 
 
-Alas, this method can be very noisy and lead to significant errors in the estimated normals. This is especially problematic in regions of the image where there are sharp depth discontinuities, such as object boundaries, where the depth estimation is often less accurate.
+Alas, the method in @eq-normal-gradient can be very noisy and lead to significant errors in the estimated normals. This is especially problematic in regions of the image where there are sharp depth discontinuities, such as object boundaries, where the depth estimation is often less accurate.
 
 Computation of the albedo map, $\hat{A}$, is also a challenging problem. Different decomposition techniques have been proposed to essentially subtract the effects of lighting from the input image to estimate the albedo. And, as with the normal estimation, errors in the albedo estimation can lead to significant artifacts in the relit image.
 
-$$ \hat{A} = F(I_\text{nat}; \theta_A) $$
+$$ \hat{A} = F(I_\text{nat}; \theta_A) $$ {#eq-albedo-direct}
 
 Even more consequential is the fact that albedo estimation can rely on other estimated AOVs, such as the surface normals, which can further propagate errors. For example, some methods for albedo estimation use the estimated surface normals to compute the shading component of the image, which is then subtracted from the input image to estimate the albedo.
 
-$$ \hat{A} = F(F(\hat{D}; \theta_N); \theta_A) = F(F(\nabla F(I_\text{nat}; \theta_D); \theta_N); \theta_A) $$
+$$ \hat{A} = F(F(\hat{D}; \theta_N); \theta_A) = F(F(\nabla F(I_\text{nat}; \theta_D); \theta_N); \theta_A) $$ {#eq-albedo-composite}
 
-All of these estimates potentially compound error, but may be preferred to the direct estimation of the AOVs from the input image, as they break down the problem into more manageable subproblems.
+All of these estimates potentially compound error, but may be preferred to the direct estimation of the AOVs from the input image (@eq-albedo-direct), as they break down the problem into more manageable subproblems.
 
 As this diagram shows, the two main AOVs we are using for relighting, $\hat{N}$ and $\hat{A}$, are both estimated from the input image $I_\text{nat}$ but indirectly through the depth estimation, $\hat{D}$.
 
