@@ -1,0 +1,25 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "convolutional",
+    "stereopsis",
+    "subproblems",
+    "unbaking",
+    "AOV",
+    "AOVs",
+    "albedo",
+    "relighting"
+  ],
+  "import": [
+    "@cspell/dict-latex/cspell-ext.json"
+  ],
+  "enabledLanguageIds": [
+    "markdown",
+    "quarto",
+    "latex"
+  ],
+  "ignoreRegExpList": [
+    "\\\\\\w+"
+  ]
+}
