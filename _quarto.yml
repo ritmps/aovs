@@ -1,15 +1,16 @@
 project:
   type: manuscript
-  render:
-    - "*.qmd"
-    - "!GEMINI.md"
 
 manuscript:
   article: index.qmd
+  notebook-links: false
+  resources: 
+    - "!GEMINI.md"
 
 format:
   html:
     css: style.css
+    notebook-links: false
     comments:
       hypothesis: true
   docx: default

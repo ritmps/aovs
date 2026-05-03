@@ -19,31 +19,39 @@
   --rit-yellow: #F6BE00;
 }
 
-.quarto-title-block.default .quarto-title-meta {
-  color: var(--rit-white);
-}
-
-.quarto-title-block.default .title {
-  color: var(--rit-white);
-}
-
-header#title-block-header {
-  background-color: var(--rit-orange);
+/* Aggressive header styling */
+header#title-block-header, 
+.quarto-title-block,
+.quarto-title-block.default {
+  background-color: var(--rit-orange) !important;
+  color: var(--rit-white) !important;
   padding: 2em;
   border-radius: 8px;
   margin-bottom: 2em;
 }
 
-header#title-block-header .description p {
-  color: var(--rit-white);
+/* Ensure all text inside the title block is white */
+#title-block-header *,
+.quarto-title-block * {
+  color: var(--rit-white) !important;
 }
 
-header#title-block-header .quarto-title-meta-heading {
-  color: var(--rit-white);
+/* Specific metadata styling */
+.quarto-title-meta-heading {
+  color: var(--rit-white) !important;
   opacity: 0.9;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  font-weight: bold;
 }
 
-header#title-block-header .quarto-title-meta-contents a {
-  color: var(--rit-white);
+.quarto-title-meta-contents a {
+  color: var(--rit-white) !important;
   text-decoration: underline;
+}
+
+/* Remove any default borders or shadows from the title block */
+.quarto-title-block {
+  border: none !important;
+  box-shadow: none !important;
 }
