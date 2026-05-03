@@ -9,6 +9,7 @@ manuscript:
 
 format:
   html:
+    css: style.css
     comments:
       hypothesis: true
   docx: default

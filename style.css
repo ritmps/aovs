@@ -1,0 +1,28 @@
+.quarto-title-block.default .quarto-title-meta {
+  color: white;
+}
+
+.quarto-title-block.default .title {
+  color: white;
+}
+
+header#title-block-header {
+  background-color: #F76902;
+  padding: 2em;
+  border-radius: 8px;
+  margin-bottom: 2em;
+}
+
+header#title-block-header .description p {
+  color: white;
+}
+
+header#title-block-header .quarto-title-meta-heading {
+  color: white;
+  opacity: 0.9;
+}
+
+header#title-block-header .quarto-title-meta-contents a {
+  color: white;
+  text-decoration: underline;
+}
