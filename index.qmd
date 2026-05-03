@@ -1,0 +1,182 @@
+---
+title: Thoughts on AOVs for Natural Images
+authors:
+  - name: Flip Phillips
+    affiliation: Rochester Institute of Technology
+    roles: writing
+    corresponding: true
+bibliography: references.bib
+---
+
+## A problem - Relighting
+
+Let's examine the following problem -
+
+> Given a natural image $\mathcal{I}$, relight the image under a new lighting condition, $L_r$.
+
+By _natural image_ we mean an image of a real-world scene as captured by a photographic camera.
+
+By _relighting_ we mean the process of changing the lighting conditions of that image, $\mathcal{I}$, by altering the intensity, direction, color, and other properties of the light sources in the scene. This results in a new image, $\mathcal{I}^\prime$, that appears as if it were captured under the new lighting condition, $L_r$.
+
+We can think of the function that performs this relighting operation as a mapping from the original image, $\mathcal{I}$, and the new lighting condition, $L_r$, to the relit image, $\mathcal{I}'$ —
+
+$$\mathcal{I}' = \mathcal{R}[\mathcal{I}; L_r]$$
+
+The primary difficulty here is that the captured image, $\mathcal{I}$, is a 2D projection of a 3D scene whose $RGB$ pixel values contain the complex interactions between light and materials.^[There is a 'unbaking a cake' analogy here that we could deploy for explanation.]
+
+But, to accurately relight the image, we need to understand the underlying geometry, material properties, and lighting conditions of the scene. This is a highly ill-posed problem because there are infinitely many combinations of geometry, materials, and lighting that could produce the same image.
+
+### Adding sensors for computational photography
+
+The Apple iPhone camera system cleverly addresses the problem of being a small camera in a small package by using multiple sensors to capture different aspects of the scene. For example, it uses a wide-angle lens to capture a broader field of view, a telephoto lens for zooming in on distant subjects, and an ultra-wide lens for capturing more of the scene. Additionally, it may use a depth sensor to capture depth information about the scene.
+
+With multiple images and depth information, the iPhone's software can better estimate some of the geometric properties of the scene, such as the distance of objects from the camera. Given the relatively small^[but high resolution] sensors and flat packaging of the camera system it is difficult to capture images with prototypical photographic aesthetics, such as shallow depth of field. However, by using the depth information and multiple images, the software can simulate these effects in post-processing, creating a more visually appealing image.
+
+If we have access to depth, we can simulate depth of field by blurring the image based on the depth values. We can estimate the depth via stereopsis between the multiple cameras combined with the somewhat coarse depth information from a single depth sensor.
+
+$$\hat{D} = \mathcal{F}_D[\mathcal{I}_1, \mathcal{I}_2, ..., \mathcal{I}_m, \mathcal{I}_d]$$
+
+Here, $\mathcal{F}_D$ uses the images and coarse depth sensor information to estimate the depth at each pixel, $\hat{D}$.
+
+This is a start and an excellent solution for depth-related aesthetics, but it still doesn't give us all the information we need to solve the relighting problem. To relight the image, we also need to estimate the material properties of the scene, such as the albedo and specular reflectance. To understand this better, let's consider the use of synthetic images.
+
+### Synthetic images
+
+Using computer graphics, we can create a synthetic image, $\mathsf{I}$, of a scene such as $\mathcal{I}$, where $\mathsf{I} \approx \mathcal{I}$. The benefit of image synthesis is that we also capture the intermediate representations of the scene, such as the depth map, $D$, normal map $N$, and the albedo map, $A$. These intermediate representations are often referred to as _AOVs_ (arbitrary output variables) in the context of computer graphics. From these, we stand a much better chance of solving the relighting problem, as we can use these AOVs to estimate the material properties and geometry of the scene, which are crucial for accurate relighting.
+
+Consider the following diagram that illustrates the relationship between the original image, $\mathsf{I}$, the AOVs, and the relighting function:
+
+```{mermaid}
+%%| label: fig-relighting-synthetic
+%%| fig-cap: "Relighting with synthetic images"
+%%| fig-width: 5
+%%| out-width: 100%
+graph LR
+    I["$$\mathsf{I}$$"]
+    N["$$N$$"]
+    A["$$A$$"]
+    L["$$L_r$$"]
+    R["$$\mathcal{R}[N, A; L_r]$$"]
+    O["$$\mathsf{I}'$$"]
+
+    I --> N
+    I --> A
+    N --> R
+    A --> R
+    L --> R
+    R --> O
+```
+
+Here, $N$ and $A$ are the normal and albedo maps, respectively, which are used by the rendering algorithm to create the original $\mathsf{I}$. Since they are 'ingredients' of the original image, they contain information crucial for subsequent relighting of the image. The relighting function $\mathcal{R}$ takes these AOVs and the new lighting condition $L_r$ to produce the relit image $\mathsf{I}'$.
+
+Notice that, in this case, there are no estimated AOVs,as we have direct access to the ground truth AOVs from the synthetic image. We have the exact geometric surface normals, $N$, and the exact albedo, $A$ at every pixel.^[No hats, $\hat{N}, \hat{A}$.]^[Note that, for truly generic relighting, there are several other AOVs that we would need to capture, such as the specular reflectance, roughness, etc. However, for the sake of simplicity, we are only considering the normal and albedo maps here. Different relighting algorithms will require different sets of AOVs, but the general principle remains the same - having access to these intermediate representations allows us to perform more accurate relighting.]
+
+## Estimating AOVs from natural images
+
+In the case of a natural image, $\mathcal{I}$, we do not have direct access to the AOVs. Instead, we need to estimate them from the image itself. This is a much more challenging problem because we are trying to infer the underlying geometry and material properties of the scene from a single 2D image.
+
+In the past, researchers have attempted to estimate AOVs from natural images using various techniques, such as shape-from-shading. However, these methods rely on strong assumptions about the material properties of the scene and mechanisms of light transport, which often do not hold in real-world scenarios. As a result, the estimated AOVs are often inaccurate, leading to poor relighting results.
+
+The advent of deep learning has provided new tools for estimating AOVs from natural images. By training neural networks on large datasets of synthetic images with known AOVs, we can learn to predict the AOVs from a single natural image. There are many approaches to this problem, such as using convolutional neural networks (CNNs) or transformer-based architectures. At their core, these models learn to extract features from the input image and use those features to predict the AOVs.
+
+Since this problem is highly ill-posed, the models often need to be regularized in some way, such as by using priors on the geometry and material properties of the scene. Errors propagate from the AOV estimation to the relighting step, so even small errors in the estimated AOVs can lead to significant artifacts in the relit image.
+
+Still - we sally forth.
+
+Consider the following -
+
+
+```{mermaid}
+%%| label: fig-relighting-estimated
+%%| fig-cap: "Relighting with estimated AOVs"
+%%| fig-width: 5
+%%| out-width: 100%
+graph LR
+    I["$$\mathcal{I}$$"]
+    N["$$\hat{N}$$"]
+    A["$$\hat{A}$$"]
+    L["$$L_r$$"]
+    R["$$\mathcal{R}[\hat{N}, \hat{A}; L_r]$$"]
+    O["$$\mathcal{I}'$$"]
+
+    I --> N
+    I --> A
+    N --> R
+    A --> R
+    L --> R
+    R --> O
+```
+
+Here, $\hat{N}$ and $\hat{A}$ are the estimated normal and albedo maps, respectively, which are predicted from the input natural image $\mathcal{I}$. We run into an interesting problem here - how do we get the components necessary for deriving $\hat{N}$ and $\hat{A}$ from the input image? If we decide to go directly from $\mathcal{I}$ to $\hat{N}$ and $\hat{A}$, we are essentially treating the problem as a black-box regression problem, where we are trying to learn a direct mapping from the input image to the AOVs.
+
+$$ \hat{N} = \mathcal{F}_N[\mathcal{I}] $$
+
+Perhaps it would make sense to work from depth information to surface normals, as depth estimation from a single image is a well-studied problem in computer vision. We could first estimate the depth map, $\hat{D}$, from the input image, and then use the depth map to compute the surface normals.
+
+$$ \hat{D} = \mathcal{F}_D[\mathcal{I}] $$
+
+$$ \hat{N} = \mathcal{F}_N[\hat{D}] $$
+
+$$ \hat{N} = \mathcal{F}_N[\mathcal{F}_D[\mathcal{I}]] $$
+
+This approach has the advantage of breaking down the problem into two stages, which may be easier to solve than trying to learn a direct mapping from the input image to the AOVs. However, it also introduces additional sources of error, as any errors in the depth estimation will propagate to the surface normal estimation and ultimately to the relighting results.
+
+To compute the normals from the depth map, we typically use the spatial gradients $\nabla \hat{D}$:
+
+$$ \hat{N} = \mathcal{F}_N[\nabla \hat{D}] = \mathcal{F}_N[\nabla \mathcal{F}_D[\mathcal{I}]] $$
+
+
+Alas, this method can be very noisy and lead to significant errors in the estimated normals. This is especially problematic in regions of the image where there are sharp depth discontinuities, such as object boundaries, where the depth estimation is often less accurate.
+
+Computation of the albedo map, $\hat{A}$, is also a challenging problem. Different decomposition techniques have been proposed to essentially subtract the effects of lighting from the input image to estimate the albedo. And, as with the normal estimation, errors in the albedo estimation can lead to significant artifacts in the relit image.
+
+$$ \hat{A} = \mathcal{F}_A[\mathcal{I}] $$
+
+Even more consequential is the fact that albedo estimation can rely on other estimated AOVs, such as the surface normals, which can further propagate errors. For example, some methods for albedo estimation use the estimated surface normals to compute the shading component of the image, which is then subtracted from the input image to estimate the albedo.
+
+$$ \hat{A} = \mathcal{F}_A[\mathcal{F}_N[\hat{D}]] = \mathcal{F}_A[\mathcal{F}_N[\nabla \mathcal{F}_D[\mathcal{I}]]] $$
+
+All of these esimates potentially compound error, but may be preferrred to the direct estimation of the AOVs from the input image, as they break down the problem into more manageable subproblems.
+
+As this diagram shows, the two main AOVs we are using for relighting, $\hat{N}$ and $\hat{A}$, are both estimated from the input image $\mathcal{I}$ but indirectly through the depth estimation, $\hat{D}$.
+
+```{mermaid}
+%%| label: fig-relighting-depth
+%%| fig-cap: "Relighting with estimated AOVs from depth"
+%%| fig-width: 6
+%%| out-width: 100%
+graph LR
+    I["$$\mathcal{I}$$"]
+    D["$$\hat{D}$$"]
+    N["$$\hat{N}$$"]
+    A["$$\hat{A}$$"]
+    L["$$L_r$$"]
+    R["$$\mathcal{R}[\hat{N}, \hat{A}; L_r]$$"]
+    O["$$\mathcal{I}'$$"]
+
+    I --> D
+
+    D --> N
+    D --> A
+    N --> A
+
+
+    I --> A
+    N --> R
+    A --> R
+    L --> R
+    R --> O
+```
+
+XXXXXX thoughts about differences between direct estimation of AOVs and the two-stage approach with depth estimation. XXXXXXX
+
+
+## Future directions
+
+Finally, it's worth noting that even with the best AOV estimation techniques, there will always be some level of uncertainty in the estimated AOVs. This uncertainty can lead to artifacts in the relit image, especially when the lighting conditions are significantly different from those in the original image. Therefore, it's important to consider the limitations of AOV estimation when performing relighting on natural images.
+
+We propose that we should consider perceptually relevant metrics for evaluating the quality of relit images, rather than relying solely on pixel-wise error metrics. This is because the ultimate goal of relighting is to create visually appealing images, and perceptual metrics may better capture the quality of the relit images from a human perspective. As we know from basic psychophysics, human perception is not always aligned with pixel-wise accuracy, and perceptual metrics may provide a more meaningful evaluation of the relighting results.
+
+
+## Section
+This is a simple placeholder for the manuscript's main document [@knuth84].

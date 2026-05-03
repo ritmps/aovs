@@ -1,0 +1,8 @@
+.DS_Store
+.quarto/
+_manuscript/
+_site/
+*_files/
+.vscode/
+.gemini/
+*.PART*
