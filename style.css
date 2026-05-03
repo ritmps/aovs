@@ -21,18 +21,19 @@
 
 /* Aggressive header styling */
 header#title-block-header, 
+.quarto-title-banner,
 .quarto-title-block,
 .quarto-title-block.default {
   background-color: var(--rit-orange) !important;
   color: var(--rit-white) !important;
-  padding: 2em;
-  border-radius: 8px;
-  margin-bottom: 2em;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* Ensure all text inside the title block is white */
 #title-block-header *,
-.quarto-title-block * {
+.quarto-title-block *,
+.quarto-title-banner * {
   color: var(--rit-white) !important;
 }
 
@@ -45,13 +46,18 @@ header#title-block-header,
   font-weight: bold;
 }
 
+.quarto-title-meta-contents p,
 .quarto-title-meta-contents a {
   color: var(--rit-white) !important;
+}
+
+.quarto-title-meta-contents a {
   text-decoration: underline;
 }
 
-/* Remove any default borders or shadows from the title block */
-.quarto-title-block {
-  border: none !important;
-  box-shadow: none !important;
+/* Clean up spacing */
+header#title-block-header {
+  padding-top: 3em;
+  padding-bottom: 3em;
+  margin-bottom: 2em;
 }
