@@ -31,7 +31,8 @@ Let's examine the following problem -
 
 By _natural image_ we mean an image of a real-world scene as captured by a photographic camera.
 
-By _relighting_ we mean the process of changing the lighting conditions of that image, $I_\text{nat}$, by altering the intensity, direction, color, and other properties of the light sources in the scene. This results in a new image, $I'_\text{nat}$, that appears as if it were captured under the new lighting condition, $L_\text{rel}$.
+By _relighting_ we mean the process of changing the lighting conditions of that image, $I_\text{nat}$, by altering the intensity, direction, color, and other properties of the light sources in the scene. This results in a new image, $I'_\text{nat}$, that appears as if it were captured under the new lighting condition, $L_\text{rel}$ [@senDualPhotography2005].
+also @wickham2015, chap. 1].
 
 We can think of the function that performs this relighting operation as a mapping from the original image, $I_\text{nat}$, and the new lighting condition, $L_\text{rel}$, to the relit image, $I'_\text{nat}$ —
 
@@ -183,8 +184,17 @@ graph LR
     R --> O
 ```
 
-XXXXXX thoughts about differences between direct estimation of AOVs and the two-stage approach with depth estimation. XXXXXXX
+### Successive versus direct estimation of AOVs
 
+The estimated AOVs, $\hat{D}$, $\hat{N}$, and $\hat{A}$, are all subject to some amount of error:
+
+$$ \hat{D} = D + \epsilon_D $$ {#eq-error}
+$$ \hat{N} = N + \epsilon_N $$ {#eq-error-normal}
+$$ \hat{A} = A + \epsilon_A $$ {#eq-error-albedo}
+
+And, obviously, if the components used in AOV estimation are themselves estimated, (see Figure \ref{fig-relighting-estimated}), the errors will compound.
+
+The errors are not constant across the image, and in the case of neural estimation methods, the errors can be highly structured and correlated across the image. XXXXX
 
 ## Future directions
 
@@ -192,6 +202,3 @@ Finally, it's worth noting that even with the best AOV estimation techniques, th
 
 We propose that we should consider perceptually relevant metrics for evaluating the quality of relit images, rather than relying solely on pixel-wise error metrics. This is because the ultimate goal of relighting is to create visually appealing images, and perceptual metrics may better capture the quality of the relit images from a human perspective. As we know from basic psychophysics, human perception is not always aligned with pixel-wise accuracy, and perceptual metrics may provide a more meaningful evaluation of the relighting results.
 
-
-## Section
-This is a simple placeholder for the manuscript's main document [@knuth84].
