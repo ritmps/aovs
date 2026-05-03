@@ -2,7 +2,11 @@
 title: Thoughts on AOVs for Natural Images
 authors:
   - name: Flip Phillips
-    affiliation: Rochester Institute of Technology
+    email: flip@rit.edu
+    url: https://ritmps.github.io/
+    affiliations:
+      - name: Rochester Institute of Technology
+        department: Motion Picture Science
     roles: writing
     corresponding: true
 bibliography: references.bib
