@@ -1,28 +1,49 @@
+:root {
+  /* Primary Palette */
+  --rit-orange: #F76902;
+  --rit-white: #FFFFFF;
+  --rit-black: #000000;
+
+  /* Secondary Palette - Neutrals */
+  --rit-cool-gray-light: #D0D3D4;
+  --rit-cool-gray-medium: #A2AAAD;
+  --rit-cool-gray-dark: #7C878E;
+  --rit-warm-gray-light: #D7D2CB;
+  --rit-warm-gray-medium: #ACA39A;
+
+  /* Accents */
+  --rit-green: #84BD00;
+  --rit-teal: #009CBD;
+  --rit-purple: #7D55C7;
+  --rit-red: #DA291C;
+  --rit-yellow: #F6BE00;
+}
+
 .quarto-title-block.default .quarto-title-meta {
-  color: white;
+  color: var(--rit-white);
 }
 
 .quarto-title-block.default .title {
-  color: white;
+  color: var(--rit-white);
 }
 
 header#title-block-header {
-  background-color: #F76902;
+  background-color: var(--rit-orange);
   padding: 2em;
   border-radius: 8px;
   margin-bottom: 2em;
 }
 
 header#title-block-header .description p {
-  color: white;
+  color: var(--rit-white);
 }
 
 header#title-block-header .quarto-title-meta-heading {
-  color: white;
+  color: var(--rit-white);
   opacity: 0.9;
 }
 
 header#title-block-header .quarto-title-meta-contents a {
-  color: white;
+  color: var(--rit-white);
   text-decoration: underline;
 }
