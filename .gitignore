@@ -1,3 +1,4 @@
+*.html
 .DS_Store
 .quarto/
 _manuscript/
@@ -7,3 +8,6 @@ _site/
 .gemini/
 *.PART*
 _Attic
+
+/.quarto/
+**/*.quarto_ipynb
