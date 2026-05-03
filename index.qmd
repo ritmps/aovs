@@ -5,25 +5,25 @@ authors:
     email: flip@rit.edu
     url: https://flipphillips.com/
     affiliations:
-      - name: Motion Picture Science, Rochester Institute of Technology
+      - name: Department of Motion Picture Science, Rochester Institute of Technology
     roles: writing
     corresponding: true
 bibliography: references.bib
 ---
 
-## A problem - Relighting
+## Relighting
 
 Let's examine the following problem -
 
-> Given a natural image $I_\text{nat}$, relight the image under a new lighting condition, $L_\text{relight}$.
+> Given a natural image $I_\text{nat}$, relight the image under a new lighting condition, $L_\text{rel}$.
 
 By _natural image_ we mean an image of a real-world scene as captured by a photographic camera.
 
-By _relighting_ we mean the process of changing the lighting conditions of that image, $I_\text{nat}$, by altering the intensity, direction, color, and other properties of the light sources in the scene. This results in a new image, $I'_\text{nat}$, that appears as if it were captured under the new lighting condition, $L_\text{relight}$.
+By _relighting_ we mean the process of changing the lighting conditions of that image, $I_\text{nat}$, by altering the intensity, direction, color, and other properties of the light sources in the scene. This results in a new image, $I'_\text{nat}$, that appears as if it were captured under the new lighting condition, $L_\text{rel}$.
 
-We can think of the function that performs this relighting operation as a mapping from the original image, $I_\text{nat}$, and the new lighting condition, $L_\text{relight}$, to the relit image, $I'_\text{nat}$ —
+We can think of the function that performs this relighting operation as a mapping from the original image, $I_\text{nat}$, and the new lighting condition, $L_\text{rel}$, to the relit image, $I'_\text{nat}$ —
 
-$$I'_\text{nat} = \mathcal{R}[I_\text{nat}; L_\text{relight}]$$
+$$I'_\text{nat} = \mathcal{R}[I_\text{nat}; L_\text{rel}]$$
 
 The primary difficulty here is that the captured image, $I_\text{nat}$, is a 2D projection of a 3D scene whose $RGB$ pixel values contain the complex interactions between light and materials.^[There is a 'unbaking a cake' analogy here that we could deploy for explanation.]
 
@@ -58,8 +58,8 @@ graph LR
     I["$$I_\text{syn}$$"]
     N["$$N$$"]
     A["$$A$$"]
-    L["$$L_\text{relight}$$"]
-    R["$$\mathcal{R}[N, A; L_\text{relight}]$$"]
+    L["$$L_\text{rel}$$"]
+    R["$$\mathcal{R}[N, A; L_\text{rel}]$$"]
     O["$$I'_\text{syn}$$"]
 
     I --> N
@@ -70,7 +70,7 @@ graph LR
     R --> O
 ```
 
-Here, $N$ and $A$ are the normal and albedo maps, respectively, which are used by the rendering algorithm to create the original $I_\text{syn}$. Since they are 'ingredients' of the original image, they contain information crucial for subsequent relighting of the image. The relighting function $\mathcal{R}$ takes these AOVs and the new lighting condition $L_\text{relight}$ to produce the relit image $I'_\text{syn}$.
+Here, $N$ and $A$ are the normal and albedo maps, respectively, which are used by the rendering algorithm to create the original $I_\text{syn}$. Since they are 'ingredients' of the original image, they contain information crucial for subsequent relighting of the image. The relighting function $\mathcal{R}$ takes these AOVs and the new lighting condition $L_\text{rel}$ to produce the relit image $I'_\text{syn}$.
 
 Notice that, in this case, there are no estimated AOVs,as we have direct access to the ground truth AOVs from the synthetic image. We have the exact geometric surface normals, $N$, and the exact albedo, $A$ at every pixel.^[No hats, $\hat{N}, \hat{A}$.]^[Note that, for truly generic relighting, there are several other AOVs that we would need to capture, such as the specular reflectance, roughness, etc. However, for the sake of simplicity, we are only considering the normal and albedo maps here. Different relighting algorithms will require different sets of AOVs, but the general principle remains the same - having access to these intermediate representations allows us to perform more accurate relighting.]
 
@@ -98,8 +98,8 @@ graph LR
     I["$$I_\text{nat}$$"]
     N["$$\hat{N}$$"]
     A["$$\hat{A}$$"]
-    L["$$L_\text{relight}$$"]
-    R["$$\mathcal{R}[\hat{N}, \hat{A}; L_\text{relight}]$$"]
+    L["$$L_\text{rel}$$"]
+    R["$$\mathcal{R}[\hat{N}, \hat{A}; L_\text{rel}]$$"]
     O["$$I'_\text{nat}$$"]
 
     I --> N
@@ -139,7 +139,7 @@ Even more consequential is the fact that albedo estimation can rely on other est
 
 $$ \hat{A} = F(F(\hat{D}; \theta_N); \theta_A) = F(F(\nabla F(I_\text{nat}; \theta_D); \theta_N); \theta_A) $$
 
-All of these esimates potentially compound error, but may be preferrred to the direct estimation of the AOVs from the input image, as they break down the problem into more manageable subproblems.
+All of these estimates potentially compound error, but may be preferred to the direct estimation of the AOVs from the input image, as they break down the problem into more manageable subproblems.
 
 As this diagram shows, the two main AOVs we are using for relighting, $\hat{N}$ and $\hat{A}$, are both estimated from the input image $I_\text{nat}$ but indirectly through the depth estimation, $\hat{D}$.
 
@@ -153,7 +153,7 @@ graph LR
     D["$$\hat{D}$$"]
     N["$$\hat{N}$$"]
     A["$$\hat{A}$$"]
-    L["$$L_\text{relight}$$"]
+    L["$$L_\text{rel}$$"]
     R["$$\mathcal{R}[\hat{N}, \hat{A}; L_relight]$$"]
     O["$$I'_\text{nat}$$"]
 
