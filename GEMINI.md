@@ -54,19 +54,22 @@ Images are fundamentally functions mapping spatial coordinates to intensities or
   * $I(x, y)$ or $I(\mathbf{x})$.
 * **Discrete Images:** Often represented identically to continuous ones, but explicitly mapped from $\mathbb{Z}^2$. Alternatively, use bracket notation for discrete indices.
   * $I[i, j]$ or $I_{i,j}$ where $(i, j) \in \mathbb{Z}^2$.
-* **Natural vs. Synthetic Source:** To avoid subscript collisions with indexing, distinguish the source using font styles:
-  * **Natural Images:** Calligraphic $\mathcal{I}$ (representing messy, captured, or real-world data).
-  * **Synthetic Images:** Sans-serif $\mathsf{I}$ (representing exact, generated, or computer-graphics data).
-* **Transformations and Mappings:** Uppercase Greek letters or Calligraphic letters.
-  * $\Phi: \mathbb{P}^2 \rightarrow \mathbb{R}^3$ for a specific coordinate map.
-  * $\mathcal{M}: \mathcal{I} \rightarrow \mathcal{I}'$ for a mapping between image states.
+* **Natural vs. Synthetic Source:** To ensure compatibility with PDF rendering (avoiding complex LaTeX fonts in Mermaid), use nominal subscripts:
+  * **Natural Images:** $I_\text{nat}$ (captured real-world data).
+  * **Synthetic Images:** $I_\text{syn}$ (exact computer-generated data).
+* **Derivation Functional:** Use a generic functional $F$ to represent the mechanism that derives intermediate representations (AOVs) from an image.
+  * $D = F(I; \theta_D)$ where $\theta$ represents the parameters of the derivation mechanism (e.g., neural network weights).
+  * $N = F(I; \theta_N)$, etc.
+* **Transformations and Mappings:** Use uppercase Greek letters or Calligraphic letters for high-level operators.
+  * $\mathcal{R}(I; L_\text{relight})$ for the relighting operation.
+  * $L_\text{relight}$ (or $L_r$) for the target lighting condition.
 
 ## 5. Operators and Transformations
-When treating images as states (rather than just functions of coordinates), use operator notation.
+When treating images as states (rather than just functions of coordinates), use operator or functional notation.
 
-* **Image Operators:** Use Calligraphic letters with square brackets to denote an operation acting on an image "state."
-  * $\mathcal{R}[\mathcal{I}]$ is the relighting operator acting on a natural image.
-  * $\mathcal{R}[\mathsf{I}] = \mathsf{I}'$ denotes an exact synthetic transformation.
+* **Image Operators:** Use square brackets or standard function notation.
+  * $\mathcal{R}[I]$ is the relighting operator acting on an image state.
+  * $\mathcal{R}(I_\text{nat}; L_r) = I'_\text{nat}$ for a relit natural image.
 * **Composition:** Use the $\circ$ operator for sequential mappings (e.g., $\mathcal{R} \circ \mathcal{E}[\mathcal{I}]$ where $\mathcal{E}$ is an enhancement operator).
 * **Estimations:** Use a hat ($\hat{\cdot}$) for operators or images that are approximated (e.g., $\hat{\mathcal{R}}$ or $\hat{\mathcal{I}}'$).
 
