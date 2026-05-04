@@ -35,6 +35,8 @@ jobs:
         run: |
           set -euxo pipefail
           quarto render --log-level=debug
+        env:
+          QUARTO_CHROMIUM_FLAGS: --no-sandbox
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

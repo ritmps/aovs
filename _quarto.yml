@@ -15,6 +15,18 @@ format:
     notebook-view: false
     comments:
       hypothesis: true
+    include-in-header:
+      - text: |
+          <script>
+          window.MathJax = {
+            chtml: {
+              matchFontHeight: false
+            },
+            svg: {
+              matchFontHeight: false
+            }
+          };
+          </script>
   docx: default
   jats: default
   pdf: default

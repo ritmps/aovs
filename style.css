@@ -22,7 +22,17 @@
 /* Global Typography & Links */
 body {
   color: var(--rit-black);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
+
+/* Ensure math isn't oversized in Safari/WebKit */
+.math.display, 
+.math.inline,
+mjx-container {
+  font-size: 1em !important;
+}
+
 
 a {
   color: var(--rit-teal);
