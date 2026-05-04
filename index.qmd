@@ -122,11 +122,15 @@ graph LR
     R --> O
 ```
 
-Here, $\hat{N}$ and $\hat{A}$ are the estimated normal and albedo maps, respectively, which are predicted from the input natural image $I_\text{nat}$. We run into an interesting problem here - how do we get the components necessary for deriving $\hat{N}$ and $\hat{A}$ from the input image? If we decide to go directly from $I_\text{nat} $ to $\hat{N}$ and $\hat{A}$, we are essentially treating the problem as a black-box regression problem, where we are trying to learn a direct mapping from the input image to the AOVs.
+Here, $\hat{N}$ and $\hat{A}$ are the estimated normal and albedo maps, respectively, which are predicted from the input natural image $I_\text{nat}$. We run into an interesting problem here - how do we get the components necessary for deriving $\hat{N}$ and $\hat{A}$ from the input image? If we decide to go directly from $I_\text{nat}$ to $\hat{N}$ and $\hat{A}$, we are essentially treating the problem as a black-box regression problem, one where we are trying to learn a direct mapping from the input image to the AOVs.
 
 $$ \hat{N} = F(I_\text{nat}; \theta_N) $$ {#eq-normal-direct}
 
-Perhaps it would make sense to work from depth information to surface normals, as depth estimation from a single image is a well-studied problem in computer vision. We could first estimate the depth map, $\hat{D}$, from the input image, and then use the depth map to compute the surface normals.
+This approach is direct and straightforward _in theory_, but in practice it can be almost impossible to learn such a mapping. The more complicated the lighting and object interactions in the scene, the more difficult still. Even with a complete geometric description of the scene this is computationally expensive, and we are trying to learn this mapping from a single image, which is a highly ill-posed problem. The model would need to learn to infer the underlying geometry and material properties of the scene from the pixel values alone, which is a very difficult task.
+
+XXXXXX
+
+Perhaps it would make sense to work from depth information to surface normals, as depth estimation from a single image is a well-studied problem in computer vision.^[Yet not completely _solved_ either.] We could first estimate the depth map, $\hat{D}$, from the input image, and then use the depth map to compute the surface normals.
 
 $$ \hat{D} = F(I_\text{nat}; \theta_D) $$ {#eq-depth-direct}
 
@@ -143,6 +147,10 @@ $$ \hat{N} = F(\nabla \hat{D}; \theta_N) = F(\nabla F(I_\text{nat}; \theta_D); \
 
 Alas, the method in @eq-normal-gradient can be very noisy and lead to significant errors in the estimated normals. This is especially problematic in regions of the image where there are sharp depth discontinuities, such as object boundaries, where the depth estimation is often less accurate.
 
+Even worse, before we can even get to the point of estimating the normals, we need to estimate the depth from a single image, which is itself a highly ill-posed problem. And again, the depth computations rely on gradient computations, which can be brittle and noise-sensitive.
+
+$$\nabla I_\text{nat} \rightarrow \hat{D}, \nabla \hat{D} \rightarrow \hat{N}, \nabla \hat{N} \rightarrow \hat{A}$$ {#eq-gradient-nightmare}
+
 Computation of the albedo map, $\hat{A}$, is also a challenging problem. Different decomposition techniques have been proposed to essentially subtract the effects of lighting from the input image to estimate the albedo. And, as with the normal estimation, errors in the albedo estimation can lead to significant artifacts in the relit image.
 
 $$ \hat{A} = F(I_\text{nat}; \theta_A) $$ {#eq-albedo-direct}
@@ -153,7 +161,7 @@ $$ \hat{A} = F(F(\hat{D}; \theta_N); \theta_A) = F(F(\nabla F(I_\text{nat}; \the
 
 All of these estimates potentially compound error, but may be preferred to the direct estimation of the AOVs from the input image (@eq-albedo-direct), as they break down the problem into more manageable subproblems.
 
-As the diagram in @fig-relighting-depth shows, the two main AOVs we are using for relighting, $\hat{N}$ and $\hat{A}$, are both estimated from the input image $I_\text{nat}$ but indirectly through the depth estimation, $\hat{D}$.
+As @fig-relighting-depth shows, the two main AOVs we are using for relighting, $\hat{N}$ and $\hat{A}$, are both estimated from the input image $I_\text{nat}$ but indirectly through the depth estimation, $\hat{D}$.
 
 ```{mermaid}
 %%| label: fig-relighting-depth
@@ -191,7 +199,7 @@ $$ \hat{D} = D + \epsilon_D $$ {#eq-error}
 $$ \hat{N} = N + \epsilon_N $$ {#eq-error-normal}
 $$ \hat{A} = A + \epsilon_A $$ {#eq-error-albedo}
 
-And, obviously, if the components used in AOV estimation are themselves estimated, (see Figure \ref{fig-relighting-estimated}), the errors will compound.
+And, obviously, if the components used in AOV estimation are themselves estimated, (as in   @fig-relighting-depth), the errors will compound.
 
 The errors are not constant across the image, and in the case of neural estimation methods, the errors can be highly structured and correlated across the image. XXXXX
 
