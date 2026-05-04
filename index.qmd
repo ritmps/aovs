@@ -1,5 +1,6 @@
 ---
 title: Thoughts on AOVs for Natural Images
+status: WIP
 authors:
   - name: Flip Phillips
     email: flip@rit.edu

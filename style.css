@@ -133,3 +133,47 @@ blockquote {
 .quarto-title-meta-contents p {
   margin-bottom: 0.2em;
 }
+
+/* --- Improvements ported from fxp --- */
+
+/* Mermaid Loop Styling */
+rect.mermaid-loop {
+    fill: #f9f9a3 !important;
+    stroke: #333 !important;
+    stroke-width: 2px !important;
+}
+
+.loopLine {
+    stroke: #333 !important;
+    stroke-width: 2px !important;
+}
+
+.labelBox {
+    fill: #f9f9a3 !important;
+    stroke: #333 !important;
+    stroke-width: 1.5px !important;
+}
+
+.loopText {
+    font-size: 16px !important;
+    font-weight: bold !important;
+    fill: #000 !important;
+}
+
+/* Code Block Wrapping for better mobile/narrow layout support */
+pre,
+code {
+    font-size: 0.85em;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
+}
+
+pre.sourceCode,
+.sourceCode pre {
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+}

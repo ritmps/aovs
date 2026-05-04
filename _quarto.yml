@@ -4,8 +4,9 @@ project:
 manuscript:
   article: index.qmd
   notebooks: []
-  resources: 
-    - "!GEMINI.md"
+
+filters:
+  - status-callout.lua
 
 format:
   html:
@@ -20,6 +21,3 @@ format:
 
 execute:
   freeze: true
-
-
-
