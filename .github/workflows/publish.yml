@@ -36,7 +36,7 @@ jobs:
           set -euxo pipefail
           quarto render --log-level=debug
         env:
-          QUARTO_CHROMIUM_FLAGS: --no-sandbox
+          QUARTO_CHROMIUM_FLAGS: --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
