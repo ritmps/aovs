@@ -27,14 +27,16 @@ jobs:
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: 1.7.13
 
-      - name: Quarto check
-        run: quarto check install
+      - name: Install Chromium
+        run: quarto install tool chromium
 
       - name: Render Manuscript
         run: |
           set -euxo pipefail
-          quarto render --log-level=debug
+          xvfb-run quarto render --log-level=debug
         env:
           QUARTO_CHROMIUM_FLAGS: --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu
 
