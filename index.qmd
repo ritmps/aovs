@@ -9,6 +9,7 @@ authors:
       - name: Department of Motion Picture Science, Rochester Institute of Technology
     roles: writing
     corresponding: true
+date-modified: last-modified
 bibliography: references.bib
 ---
 
@@ -17,8 +18,6 @@ bibliography: references.bib
 This document is a work in progress and represents some current thinking in our lab on the estimation and use of Arbitrary Output Variables (AOVs) for natural images.
 
 Don't take any of it seriously yet and feel free to reach out if you have magically discovered this in the wild and want to chat about it.
-
-Despite the fact that there is a `gemini.md` file in the repository, rest assured that it is only there to help me organize some thoughts on notation, and to help dig out some syntax and formatting gotchas that I have experienced using Quarto and Mermaid.
 
 The thoughts are AI-Free.
 :::

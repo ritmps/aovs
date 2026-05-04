@@ -26,14 +26,6 @@ body {
   text-size-adjust: 100%;
 }
 
-/* Ensure math isn't oversized in Safari/WebKit */
-.math.display, 
-.math.inline,
-mjx-container {
-  font-size: 1em !important;
-}
-
-
 a {
   color: var(--rit-teal);
   text-decoration: none;
@@ -43,6 +35,13 @@ a {
 a:hover {
   color: var(--rit-orange);
   text-decoration: underline;
+}
+
+/* Ensure math isn't oversized in Safari/WebKit */
+.math.display,
+.math.inline,
+mjx-container {
+  font-size: 1em !important;
 }
 
 /* Header Styling */
@@ -118,7 +117,37 @@ blockquote {
   font-weight: 600;
 }
 
-/* Mermaid Customization via CSS */
+/* Figure & Float Layout (from fxp) */
+.figure {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.quarto-float-caption-bottom {
+  position: relative;
+  padding-top: 10px;
+}
+
+.quarto-float-caption-bottom::before {
+  content: "";
+  display: block;
+  width: 20%;
+  height: 2px;
+  background-color: rgb(223, 222, 222);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.quarto-float {
+  margin-bottom: 1.5em;
+}
+
+/* Mermaid Customization */
 .mermaid svg {
   font-family: inherit !important;
 }
@@ -139,51 +168,54 @@ blockquote {
   color: var(--rit-black) !important;
 }
 
-/* Footer / Metadata area at bottom */
-.quarto-title-meta-contents p {
-  margin-bottom: 0.2em;
-}
-
-/* --- Improvements ported from fxp --- */
-
-/* Mermaid Loop Styling */
+/* Mermaid Loop Styling (from fxp) */
 rect.mermaid-loop {
-    fill: #f9f9a3 !important;
-    stroke: #333 !important;
-    stroke-width: 2px !important;
+  fill: #f9f9a3 !important;
+  stroke: #333 !important;
+  stroke-width: 2px !important;
 }
 
 .loopLine {
-    stroke: #333 !important;
-    stroke-width: 2px !important;
+  stroke: #333 !important;
+  stroke-width: 2px !important;
 }
 
 .labelBox {
-    fill: #f9f9a3 !important;
-    stroke: #333 !important;
-    stroke-width: 1.5px !important;
+  fill: #f9f9a3 !important;
+  stroke: #333 !important;
+  stroke-width: 1.5px !important;
 }
 
 .loopText {
-    font-size: 16px !important;
-    font-weight: bold !important;
-    fill: #000 !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  fill: #000 !important;
 }
 
-/* Code Block Wrapping for better mobile/narrow layout support */
+/* Code Block Styling & Wrapping */
 pre,
 code {
-    font-size: 0.85em;
+  font-size: 0.85em;
 }
 
 pre {
-    white-space: pre-wrap;
-    word-break: break-word;
-    overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
 }
 
 pre.sourceCode,
 .sourceCode pre {
-    white-space: pre-wrap !important;
-    word-break: break-word !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+}
+
+.sourceCode code,
+.sourceCode .line {
+  font-size: inherit !important;
+}
+
+/* Footer / Metadata area at bottom */
+.quarto-title-meta-contents p {
+  margin-bottom: 0.2em;
 }

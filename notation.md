@@ -1,9 +1,3 @@
-# Project Conventions
-
-## Tone
-- The tone of the project should be **slightly informal** and **conversational**, aiming to engage readers in a friendly and approachable manner. Still, where appropriate, since the audience is students, we should maintain a level of professionalism and clarity to ensure the content is educational and informative.
-
-- The content is pretty much a 'thinking out loud' style, so it should feel like a dialogue between the author and the reader, rather than a formal presentation of information.
 
 # Mathematical Notation Standards for Multidimensional Image Processing
 

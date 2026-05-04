@@ -10,7 +10,7 @@ filters:
 
 format:
   html:
-    css: style.css
+    css: styles.css
     notebook-links: false
     notebook-view: false
     comments:
