@@ -30,13 +30,10 @@ jobs:
         with:
           version: 1.7.13
 
-      - name: Render Manuscript
+      - name: Render Manuscript (HTML only)
         uses: quarto-dev/quarto-actions/render@v2
         with:
-          to: all
-          browser: true
-        env:
-          QUARTO_CHROMIUM_FLAGS: --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu
+          to: html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
