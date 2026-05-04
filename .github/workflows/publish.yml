@@ -2,6 +2,7 @@ name: Publish to GitHub Pages
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -10,10 +11,9 @@ permissions:
   id-token: write
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build-deploy:
@@ -28,8 +28,13 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
+      - name: Quarto check
+        run: quarto check install
+
       - name: Render Manuscript
-        run: quarto render
+        run: |
+          set -euxo pipefail
+          quarto render --log-level=debug
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
