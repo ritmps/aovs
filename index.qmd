@@ -25,6 +25,8 @@ The thoughts are AI-Free. For our standard mathematical conventions, see [notati
 
 ## Relighting
 
+Before we begin formulating the relighting problem mathematically, please note that we define our standard mathematical conventions in [Mathematical Notation Standards](notation.qmd).
+
 Let's examine the following problem -
 
 > Given a natural image continuous field $\mathbf{I}_\text{nat}$, relight the image under a new lighting condition, $L_\text{rel}$.
