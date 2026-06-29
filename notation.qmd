@@ -4,6 +4,7 @@ author: [flip]
 date-modified: last-modified
 bibliography: references.bib
 format:
+  html: default
   docx:
     toc: false
     number-sections: false

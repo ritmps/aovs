@@ -19,13 +19,26 @@ This document is a work in progress and represents some current thinking in our 
 
 Don't take any of it seriously yet and feel free to reach out if you have magically discovered this in the wild and want to chat about it.
 
-The thoughts are AI-Free. For our standard mathematical conventions, see [notation.qmd](notation.qmd).
+The thoughts are largely AI-Free for now. 
+
+For our standard mathematical conventions, see [Mathematical Notation Standards](notation-preview.html).
 :::
 
+## Images, Pixels, and Image Fields
+
+Photography is _roughly_ the process of mapping a 3D light field in the environment to a 2D image plane, resulting in a so-called _natural image_, $\mathbf{I}_\text{nat}$. Gibson [@gibsonEcologicalApproachVisual1979] refers to the 3-D light field in our environment as the _Optic Array_. We can think of the light field as the space of all possible light rays passing through a point in space, represented as a 4-D radiance field $L(x, y, \theta, \phi)$, where $(x, y)$ are the spatial coordinates and $(\theta, \phi)$ are the angular coordinates.
+
+In the context of digital photography, the natural image is a 2D array of pixels, where each pixel value is a function of the irradiance (incident power per unit area) integrated over the sensor element's area, which corresponds to the scene radiance passing through the lens aperture. This is a simplification of the true light field, but a useful one for the purposes of this document. (See [@smithPixelNotLittle1995] for the canonical argument against this simplification.)
+
+## AOVs
+
+In computer graphics, an AOV is a separate rendering pass that captures a specific component of the rendered image, such as depth, normals, albedo, or specular reflections. Synthetic imagery renders the AOVs directly. Frequently they are the results of intermediate computations necessary for the final RGB image ^[AKA the so-called 'beauty pass'.], but this isn't always the case. For example, one could render an AOV of just the direct illumination from area lights and another AOV of just the emissive components. The advantage of AOVs is that they can be reassembled^[e.g. in compositing software] to produce the final RGB image using information beyond the simple radiance fields approximated with photorealistic rendering.
+
+Unfortunately, in practical photography, the availability of this information is rather limited by the sensor package of the system. There _are_ some AOVs that can be captured with sensors, such as depth, via stereopsis and time-of-flight measurements. Your iPhone has several strategies to create an $RGBD$ image that augments the $RGB$ image with depth information. Alas, there are no sensors that can capture the individual components of the scene's radiance field, such as albedo, surface normals, or specularities.
+
+However, some AI techniques have been developed that allow one to estimate these components from a single $RGB$ image. 
 
 ## Relighting
-
-Before we begin formulating the relighting problem mathematically, please note that we define our standard mathematical conventions in [Mathematical Notation Standards](notation.qmd).
 
 Let's examine the following problem -
 
@@ -61,7 +74,7 @@ This is a start and an excellent solution for depth-related aesthetics, but it s
 
 Estimating AOVs from a single image has been a popular area of research in recent years. Depth estimation started the party [@zhangReviewMonocularDepth2025], followed by estimation of a variety of other properties, such as surface normals, albedo, and specularity, in one shot [@salehDAViDDataefficientAccurate2025].
 
-We can look to early high-dynamic range luminance recovery efforts [@debevecRecoveringHighDynamic1997] as an inspiration for how we might go about solving the more general problem of AOV estimation. However, these methods were developed in a different context than what we are capable of today. 
+We can look to early high-dynamic range radiance map recovery efforts [@debevecRecoveringHighDynamic1997] as an inspiration for how we might go about solving the more general problem of AOV estimation. However, these methods were developed in a different context than what we are capable of today. 
 
 ### Depth
 
