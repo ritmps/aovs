@@ -1,5 +1,14 @@
-
-# Mathematical Notation Standards for Multidimensional Image Processing
+---
+title: Mathematical Notation Standards - fliplab
+author: [flip]
+date-modified: last-modified
+bibliography: references.bib
+format:
+  docx:
+    toc: false
+    number-sections: false
+    toc-depth: 1
+---
 
 Establishing a clean, consistent notation system is critical for formulating mathematical frameworks in computer vision, multidimensional image processing, and geometry.
 
@@ -40,32 +49,29 @@ Distinguishing between 2D/3D and inhomogeneous/homogeneous coordinates is essent
   * *3D Homogeneous:* $\tilde{\mathbf{X}} = (X, Y, Z, 1)^\top \in \mathbb{P}^3$.
   * *Equivalence:* Use $\sim$ to denote equality up to a scale factor (e.g., $\tilde{\mathbf{u}} \sim \mathbf{P} \tilde{\mathbf{X}}$).
 
-## 4. Images and Maps
-Images are fundamentally functions mapping spatial coordinates to intensities or vectors.
+## 4. Images and Maps (Continuous Fields)
+Following Alvy Ray Smith's principle ("A Pixel Is Not A Little Square"), we treat images not as discrete grids of pixels, but as continuous fields mapping a 2D spatial domain (manifold) $\Omega \subset \mathbb{R}^2$ to a tensor value space.
 
-* **Continuous Images:** Uppercase italic letters, defined as continuous functions.
-  * $I: \mathbb{R}^2 \rightarrow \mathbb{R}$ (grayscale).
-  * $I(x, y)$ or $I(\mathbf{x})$.
-* **Discrete Images:** Often represented identically to continuous ones, but explicitly mapped from $\mathbb{Z}^2$. Alternatively, use bracket notation for discrete indices.
-  * $I[i, j]$ or $I_{i,j}$ where $(i, j) \in \mathbb{Z}^2$.
-* **Natural vs. Synthetic Source:** To ensure compatibility with PDF rendering (avoiding complex LaTeX fonts in Mermaid), use nominal subscripts:
-  * **Natural Images:** $I_\text{nat}$ (captured real-world data).
-  * **Synthetic Images:** $I_\text{syn}$ (exact computer-generated data).
-* **Derivation Functional:** Use a generic functional $F$ to represent the mechanism that derives intermediate representations (AOVs) from an image.
-  * $D = F(I; \theta_D)$ where $\theta$ represents the parameters of the derivation mechanism (e.g., neural network weights).
-  * $N = F(I; \theta_N)$, etc.
-* **Transformations and Mappings:** Use uppercase Greek letters or Calligraphic letters for high-level operators.
-  * $\mathcal{R}(I; L_\text{relight})$ for the relighting operation.
-  * $L_\text{rel}$ (or $L_r$) for the target lighting condition.
+* **Continuous Fields:** Mappings from a coordinate space to a value space.
+  * $I : \Omega \rightarrow \mathcal{V}$ where $\mathcal{V}$ is the value space (e.g., $\mathbb{R}^3$ for RGB color, $\mathbb{R}$ for scalar depth).
+* **Color Fields:** Typically denoted in bold: $\mathbf{I} : \Omega \rightarrow \mathbb{R}^3$.
+* **Natural vs. Synthetic Source:**
+  * **Natural Images:** $\mathbf{I}_\text{nat}$ (captured real-world continuous field).
+  * **Synthetic Images:** $\mathbf{I}_\text{syn}$ (exact computer-generated continuous field).
+* **Estimations and Decorations:** Approximated or estimated fields are marked with a wide hat (e.g., $\widehat{Z}$ for estimated depth, $\widehat{\mathbf{N}}$ for estimated normals).
 
-## 5. Operators and Transformations
-When treating images as states (rather than just functions of coordinates), use operator or functional notation.
+## 5. Functional Operators and Tensor Composition
+Rather than coordinate-wise array operations, we formulate image processing as mappings between function spaces.
 
-* **Image Operators:** Use square brackets or standard function notation.
-  * $\mathcal{R}[I]$ is the relighting operator acting on an image state.
-  * $\mathcal{R}(I_\text{nat}; L_r) = I'_\text{nat}$ for a relit natural image.
-* **Composition:** Use the $\circ$ operator for sequential mappings (e.g., $\mathcal{R} \circ \mathcal{E}[\mathcal{I}]$ where $\mathcal{E}$ is an enhancement operator).
-* **Estimations:** Use a hat ($\hat{\cdot}$) for operators or images that are approximated (e.g., $\hat{\mathcal{R}}$ or $\hat{\mathcal{I}}'$).
+* **Functional Operators:** Represented by calligraphic letters.
+  * $\widehat{\mathcal{D}} : (\Omega \to \mathbb{R}^3) \to (\Omega \to \mathbb{R})$ maps a color field to an estimated depth field: $\widehat{Z} = \widehat{\mathcal{D}}(\mathbf{I})$.
+  * $\widehat{\mathcal{N}} : (\Omega \to \mathbb{R}) \to (\Omega \to \mathbb{S}^2)$ maps a depth field to an estimated normal field: $\widehat{\mathbf{N}} = \widehat{\mathcal{N}}(\widehat{Z})$.
+* **Functional Composition:** Operators can be composed sequentially using the $\circ$ operator:
+  * $\widehat{\mathbf{N}} = (\widehat{\mathcal{N}} \circ \widehat{\mathcal{D}})(\mathbf{I})$
+* **Tensor Concatenation (Direct Sum $\oplus$):** Concatenating channels or augmenting fields is formulated using $\oplus$:
+  * $\mathbf{I}_\text{RGBZ} = \mathbf{I} \oplus \widehat{Z}$ where for any $\mathbf{x} \in \Omega$, $(\mathbf{I} \oplus \widehat{Z})(\mathbf{x}) = [\mathbf{I}(\mathbf{x})^\top, \widehat{Z}(\mathbf{x})]^\top$.
+* **Relighting Mapping:**
+  * $\mathbf{I}' = \mathcal{R}(\widehat{\mathbf{N}}, \widehat{\mathbf{A}}; L_\text{rel})$ represents the relighting function mapping estimated geometry, albedo, and new lighting conditions to a relit color field.
 
 ## 6. Camera and Projection Standards (The "Pinhole" Standard)
 Following Hartley and Zisserman's *Multiple View Geometry* conventions:

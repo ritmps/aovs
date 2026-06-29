@@ -19,7 +19,7 @@ This document is a work in progress and represents some current thinking in our 
 
 Don't take any of it seriously yet and feel free to reach out if you have magically discovered this in the wild and want to chat about it.
 
-The thoughts are AI-Free.
+The thoughts are AI-Free. For our standard mathematical conventions, see [notation.qmd](notation.qmd).
 :::
 
 
@@ -27,19 +27,19 @@ The thoughts are AI-Free.
 
 Let's examine the following problem -
 
-> Given a natural image $I_\text{nat}$, relight the image under a new lighting condition, $L_\text{rel}$.
+> Given a natural image continuous field $\mathbf{I}_\text{nat}$, relight the image under a new lighting condition, $L_\text{rel}$.
 
-By _natural image_ we mean an image of a real-world scene as captured by a photographic camera.
+By _natural image_ we mean a continuous image field of a real-world scene as captured by a photographic camera.
 
-By _relighting_ we mean the process of changing the lighting conditions of that image, $I_\text{nat}$, by altering the intensity, direction, color, and other properties of the light sources in the scene. This results in a new image, $I'_\text{nat}$, that appears as if it were captured under the new lighting condition, $L_\text{rel}$ [@senDualPhotography2005].
+By _relighting_ we mean the process of changing the lighting conditions of that image field, $\mathbf{I}_\text{nat}$, by altering the intensity, direction, color, and other properties of the light sources in the scene. This results in a new image field, $\mathbf{I}'_\text{nat}$, that appears as if it were captured under the new lighting condition, $L_\text{rel}$ [@senDualPhotography2005].
 
-We can think of the function that performs this relighting operation as a mapping from the original image, $I_\text{nat}$, and the new lighting condition, $L_\text{rel}$, to the relit image, $I'_\text{nat}$ —
+We can think of the operator that performs this relighting operation as a mapping from the original image field, $\mathbf{I}_\text{nat}$, and the new lighting condition, $L_\text{rel}$, to the relit image field, $\mathbf{I}'_\text{nat}$ —
 
-$$I'_\text{nat} = \mathcal{R}[I_\text{nat}; L_\text{rel}]$$ {#eq-relighting}
+$$\mathbf{I}'_\text{nat} = \mathcal{R}(\mathbf{I}_\text{nat}; L_\text{rel})$$ {#eq-relighting}
 
-The primary difficulty here is that the captured image, $I_\text{nat}$, is a 2D projection of a 3D scene whose $RGB$ pixel values contain the complex interactions between light and materials.^[There is a 'unbaking a cake' analogy here that we could deploy for explanation.]
+The primary difficulty here is that the captured image field, $\mathbf{I}_\text{nat}$, is a 2D projection of a 3D scene whose $RGB$ sample values contain the complex interactions between light and materials.^[There is a 'unbaking a cake' analogy here that we could deploy for explanation.]
 
-But, to accurately relight the image, we need to understand the underlying geometry, material properties, and lighting conditions of the scene. This is a highly ill-posed problem because there are infinitely many combinations of geometry, materials, and lighting that could produce the same image.
+But, to accurately relight the image, we need to understand the underlying geometry, material properties, and lighting conditions of the scene. This is a highly ill-posed problem because there are infinitely many combinations of geometry, materials, and lighting that could produce the same image field.
 
 ### Adding sensors for computational photography
 
@@ -47,19 +47,34 @@ The Apple iPhone camera system cleverly addresses the problem of being a small c
 
 With multiple images and depth information, the iPhone's software can better estimate some of the geometric properties of the scene, such as the distance of objects from the camera. Given the relatively small^[in size, but high resolution] sensors and flat packaging of the camera system it is difficult to capture images with prototypical photographic aesthetics, such as shallow depth of field. However, by using the depth information and multiple images, the software can simulate these effects in post-processing, creating a more visually appealing image.
 
-If we have access to depth, we can simulate depth of field by blurring the image based on the depth values. We can estimate the depth via stereopsis between the multiple cameras combined with the somewhat coarse depth information from a single depth sensor.
+If we have access to depth, we can simulate depth of field by blurring the image based on the depth values. We can estimate the depth field via stereopsis between the multiple cameras combined with the somewhat coarse depth information from a single depth sensor.
 
-$$\hat{D} = F(I_1, I_2, \dots, I_m, I_d; \theta_D)$$ {#eq-depth-est}
+$$\widehat{Z} = \widehat{\mathcal{D}}(\mathbf{I}_1, \mathbf{I}_2, \dots, \mathbf{I}_m, \mathbf{I}_d)$$ {#eq-depth-est}
 
-Here, the functional $F$ in @eq-depth-est uses the images and coarse depth sensor information to estimate the depth at each pixel, $\hat{D}$.
+Here, the functional operator $\widehat{\mathcal{D}}$ in @eq-depth-est uses the continuous image fields and coarse depth sensor information to estimate the depth field, $\widehat{Z}$.
 
 This is a start and an excellent solution for depth-related aesthetics, but it still doesn't give us all the information we need to solve the relighting problem. To relight the image, we also need to estimate the material properties of the scene, such as the albedo and specular reflectance. To understand this better, let's consider the use of synthetic images.
 
+## Estimation of AOVs from a single image
+
+Estimating AOVs from a single image has been a popular area of research in recent years. Depth estimation started the party [@zhangReviewMonocularDepth2025], followed by estimation of a variety of other properties, such as surface normals, albedo, and specularity, in one shot [@salehDAViDDataefficientAccurate2025].
+
+We can look to early high-dynamic range luminance recovery efforts [@debevecRecoveringHighDynamic1997] as an inspiration for how we might go about solving the more general problem of AOV estimation. However, these methods were developed in a different context than what we are capable of today. 
+
+### Depth
+
+For single-image depth estimation, the mapping from the input RGB field $\mathbf{I}$ to an augmented RGBZ representation can be formulated as:
+
+$$ \mathbf{I} \rightarrow \mathbf{I} \oplus \widehat{Z} \quad \text{where} \quad \widehat{Z} = \widehat{\mathcal{D}}(\mathbf{I}) $$ {#eq-rgb-to-rgbz}
+
+Here, $\widehat{Z}$ represents the estimated depth field derived from the input field $\mathbf{I}$ via the estimator operator $\widehat{\mathcal{D}}$. 
+
+
 ### Synthetic images
 
-Using computer graphics, we can create a synthetic image, $I_\text{syn}$, of a scene such as $I_\text{nat}$, where $I_\text{syn} \approx I_\text{nat}$^[If we _could_ create $I_\text{syn} = I_\text{nat}$ we would have solved photorealism and we could just pack all this up and go home. I have _extensive, strong feelings_ about this goal that I should probably turn into another article.]. The benefit of image synthesis is that we also capture the intermediate representations of the scene, such as the depth map, $D$, normal map $N$, and the albedo map, $A$. These intermediate representations are often referred to as _AOVs_ (arbitrary output variables) in the context of computer graphics. From these, we stand a much better chance of solving the relighting problem, as we can use these AOVs to estimate the material properties and geometry of the scene, which are crucial for accurate relighting.
+Using computer graphics, we can create a synthetic image field, $\mathbf{I}_\text{syn}$, of a scene such as $\mathbf{I}_\text{nat}$, where $\mathbf{I}_\text{syn} \approx \mathbf{I}_\text{nat}$^[If we _could_ create $\mathbf{I}_\text{syn} = \mathbf{I}_\text{nat}$ we would have solved photorealism and we could just pack all this up and go home. I have _extensive, strong feelings_ about this goal that I should probably turn into another article.]. The benefit of image synthesis is that we also capture the intermediate representations of the scene, such as the depth map, $Z$, normal map $\mathbf{N}$, and the albedo map, $\mathbf{A}$. These intermediate representations are often referred to as _AOVs_ (arbitrary output variables) in the context of computer graphics. From these, we stand a much better chance of solving the relighting problem, as we can use these AOVs to estimate the material properties and geometry of the scene, which are crucial for accurate relighting.
 
-Consider the diagram in @fig-relighting-synthetic, which illustrates the relationship between the original image, $I_\text{syn}$, the AOVs, and the relighting function:
+Consider the diagram in @fig-relighting-synthetic, which illustrates the relationship between the original image field, $\mathbf{I}_\text{syn}$, the AOVs, and the relighting operator:
 
 ```{mermaid}
 %%| label: fig-relighting-synthetic
@@ -67,12 +82,12 @@ Consider the diagram in @fig-relighting-synthetic, which illustrates the relatio
 %%| fig-width: 5
 %%| out-width: 100%
 graph LR
-    I["$$I_\text{syn}$$"]
-    N["$$N$$"]
-    A["$$A$$"]
+    I["$$\mathbf{I}_\text{syn}$$"]
+    N["$$\mathbf{N}$$"]
+    A["$$\mathbf{A}$$"]
     L["$$L_\text{rel}$$"]
-    R["$$\mathcal{R}[N, A; L_\text{rel}]$$"]
-    O["$$I'_\text{syn}$$"]
+    R["$$\mathcal{R}(\mathbf{N}, \mathbf{A}; L_\text{rel})$$"]
+    O["$$\mathbf{I}'_\text{syn}$$"]
 
     I --> N
     I --> A
@@ -82,13 +97,13 @@ graph LR
     R --> O
 ```
 
-Here, $N$ and $A$ are the normal and albedo maps, respectively, which are used by the rendering algorithm to create the original $I_\text{syn}$. Since they are 'ingredients' of the original image, they contain information crucial for subsequent relighting of the image. The relighting function $\mathcal{R}$ takes these AOVs and the new lighting condition $L_\text{rel}$ to produce the relit image $I'_\text{syn}$.
+Here, $\mathbf{N}$ and $\mathbf{A}$ are the normal and albedo maps, respectively, which are used by the rendering algorithm to create the original $\mathbf{I}_\text{syn}$. Since they are 'ingredients' of the original image, they contain information crucial for subsequent relighting of the image. The relighting operator $\mathcal{R}$ takes these AOVs and the new lighting condition $L_\text{rel}$ to produce the relit image field $\mathbf{I}'_\text{syn}$.
 
-Notice that, in this case, there are no estimated AOVs, as we have direct access to the ground truth AOVs from the synthetic image. We have the _exact, computed_ geometric surface normals, $N$, and the _exact, computed_ albedo, $A$ at every pixel.^[Note that, for truly generic relighting, there are several other AOVs that we would need to capture, such as the specular reflectance, roughness, etc. However, for the sake of simplicity, we are only considering the normal and albedo maps here. Different relighting algorithms will require different sets of AOVs, but the general principle remains the same - having access to these intermediate representations allows us to perform more accurate relighting.]
+Notice that, in this case, there are no estimated AOVs, as we have direct access to the ground truth AOVs from the synthetic image. We have the _exact, computed_ geometric surface normals, $\mathbf{N}$, and the _exact, computed_ albedo, $\mathbf{A}$ at every sample point.^[Note that, for truly generic relighting, there are several other AOVs that we would need to capture, such as the specular reflectance, roughness, etc. However, for the sake of simplicity, we are only considering the normal and albedo maps here. Different relighting algorithms will require different sets of AOVs, but the general principle remains the same - having access to these intermediate representations allows us to perform more accurate relighting.]
 
 ## Estimating AOVs from natural images
 
-In the case of a natural image, $I_\text{nat}$, we do not have direct access to the AOVs. Instead, we need to estimate them from the image itself. This is a much more challenging problem because we are trying to infer the underlying geometry and material properties of the scene from a single 2D image.
+In the case of a natural image field, $\mathbf{I}_\text{nat}$, we do not have direct access to the AOVs. Instead, we need to estimate them from the image itself. This is a much more challenging problem because we are trying to infer the underlying geometry and material properties of the scene from a single 2D image.
 
 In the past, researchers have attempted to estimate AOVs from natural images using various techniques, such as shape-from-shading. However, these methods rely on strong assumptions about the material properties of the scene and mechanisms of light transport, which often do not hold in real-world scenarios. As a result, the estimated AOVs are often inaccurate, leading to poor relighting results.
 
@@ -107,12 +122,12 @@ Consider the relationship illustrated in @fig-relighting-estimated:
 %%| fig-width: 5
 %%| out-width: 100%
 graph LR
-    I["$$I_\text{nat}$$"]
-    N["$$\hat{N}$$"]
-    A["$$\hat{A}$$"]
+    I["$$\mathbf{I}_\text{nat}$$"]
+    N["$$\widehat{\mathbf{N}}$$"]
+    A["$$\widehat{\mathbf{A}}$$"]
     L["$$L_\text{rel}$$"]
-    R["$$\mathcal{R}[\hat{N}, \hat{A}; L_\text{rel}]$$"]
-    O["$$I'_\text{nat}$$"]
+    R["$$\mathcal{R}(\widehat{\mathbf{N}}, \widehat{\mathbf{A}}; L_\text{rel})$$"]
+    O["$$\mathbf{I}'_\text{nat}$$"]
 
     I --> N
     I --> A
@@ -122,46 +137,42 @@ graph LR
     R --> O
 ```
 
-Here, $\hat{N}$ and $\hat{A}$ are the estimated normal and albedo maps, respectively, which are predicted from the input natural image $I_\text{nat}$. We run into an interesting problem here - how do we get the components necessary for deriving $\hat{N}$ and $\hat{A}$ from the input image? If we decide to go directly from $I_\text{nat}$ to $\hat{N}$ and $\hat{A}$, we are essentially treating the problem as a black-box regression problem, one where we are trying to learn a direct mapping from the input image to the AOVs.
+Here, $\widehat{\mathbf{N}}$ and $\widehat{\mathbf{A}}$ are the estimated normal and albedo fields, respectively, which are predicted from the input natural image field $\mathbf{I}_\text{nat}$. We run into an interesting problem here - how do we get the components necessary for deriving $\widehat{\mathbf{N}}$ and $\widehat{\mathbf{A}}$ from the input image? If we decide to go directly from $\mathbf{I}_\text{nat}$ to $\widehat{\mathbf{N}}$ and $\widehat{\mathbf{A}}$, we are essentially treating the problem as a black-box regression problem, one where we are trying to learn a direct mapping from the input image field to the AOVs.
 
-$$ \hat{N} = F(I_\text{nat}; \theta_N) $$ {#eq-normal-direct}
+$$ \widehat{\mathbf{N}} = \widehat{\mathcal{N}}(\mathbf{I}_\text{nat}) $$ {#eq-normal-direct}
 
 This approach is direct and straightforward _in theory_, but in practice it can be almost impossible to learn such a mapping. The more complicated the lighting and object interactions in the scene, the more difficult still. Even with a complete geometric description of the scene this is computationally expensive, and we are trying to learn this mapping from a single image, which is a highly ill-posed problem. The model would need to learn to infer the underlying geometry and material properties of the scene from the pixel values alone, which is a very difficult task.
 
-XXXXXX
+Perhaps it would make sense to work from depth information to surface normals, as depth estimation from a single image is a well-studied problem in computer vision.^[Yet not completely _solved_ either.] We could first estimate the depth field, $\widehat{Z}$, from the input image field, and then use the depth field to compute the surface normals.
 
-Perhaps it would make sense to work from depth information to surface normals, as depth estimation from a single image is a well-studied problem in computer vision.^[Yet not completely _solved_ either.] We could first estimate the depth map, $\hat{D}$, from the input image, and then use the depth map to compute the surface normals.
+$$ \widehat{Z} = \widehat{\mathcal{D}}(\mathbf{I}_\text{nat}) $$ {#eq-depth-direct}
 
-$$ \hat{D} = F(I_\text{nat}; \theta_D) $$ {#eq-depth-direct}
+$$ \widehat{\mathbf{N}} = \widehat{\mathcal{N}}(\widehat{Z}) $$ {#eq-normal-from-depth}
 
-$$ \hat{N} = F(\hat{D}; \theta_N) $$ {#eq-normal-from-depth}
+$$ \widehat{\mathbf{N}} = (\widehat{\mathcal{N}} \circ \widehat{\mathcal{D}})(\mathbf{I}_\text{nat}) $$ {#eq-normal-composite}
 
-$$ \hat{N} = F(F(I_\text{nat}; \theta_D); \theta_N) $$ {#eq-normal-composite}
+This approach (@eq-normal-composite) has the advantage of breaking down the problem into two stages (@eq-depth-direct and @eq-normal-from-depth), which may be easier to solve than trying to learn a direct mapping from the input image field to the AOVs (@eq-normal-direct). However, it also introduces additional sources of error, as any errors in the depth estimation will propagate to the surface normal estimation and ultimately to the relighting results.
 
-This approach (@eq-normal-composite) has the advantage of breaking down the problem into two stages (@eq-depth-direct and @eq-normal-from-depth), which may be easier to solve than trying to learn a direct mapping from the input image to the AOVs (@eq-normal-direct). However, it also introduces additional sources of error, as any errors in the depth estimation will propagate to the surface normal estimation and ultimately to the relighting results.
+To compute the normals from the depth field, we typically use the spatial gradients $\nabla \widehat{Z}$:
 
-To compute the normals from the depth map, we typically use the spatial gradients $\nabla \hat{D}$:
-
-$$ \hat{N} = F(\nabla \hat{D}; \theta_N) = F(\nabla F(I_\text{nat}; \theta_D); \theta_N) $$ {#eq-normal-gradient}
+$$ \widehat{\mathbf{N}} = \widehat{\mathcal{N}}(\nabla \widehat{Z}) = (\widehat{\mathcal{N}} \circ \nabla \circ \widehat{\mathcal{D}})(\mathbf{I}_\text{nat}) $$ {#eq-normal-gradient}
 
 
 Alas, the method in @eq-normal-gradient can be very noisy and lead to significant errors in the estimated normals. This is especially problematic in regions of the image where there are sharp depth discontinuities, such as object boundaries, where the depth estimation is often less accurate.
 
 Even worse, before we can even get to the point of estimating the normals, we need to estimate the depth from a single image, which is itself a highly ill-posed problem. And again, the depth computations rely on gradient computations, which can be brittle and noise-sensitive.
 
-$$\nabla I_\text{nat} \rightarrow \hat{D}, \nabla \hat{D} \rightarrow \hat{N}, \nabla \hat{N} \rightarrow \hat{A}$$ {#eq-gradient-nightmare}
+$$\nabla \mathbf{I}_\text{nat} \rightarrow \widehat{Z}, \nabla \widehat{Z} \rightarrow \widehat{\mathbf{N}}, \nabla \widehat{\mathbf{N}} \rightarrow \widehat{\mathbf{A}}$$ {#eq-gradient-nightmare}Computation of the albedo field, $\widehat{\mathbf{A}}$, is also a challenging problem. Different decomposition techniques have been proposed to essentially subtract the effects of lighting from the input image field to estimate the albedo. And, as with the normal estimation, errors in the albedo estimation can lead to significant artifacts in the relit image.
 
-Computation of the albedo map, $\hat{A}$, is also a challenging problem. Different decomposition techniques have been proposed to essentially subtract the effects of lighting from the input image to estimate the albedo. And, as with the normal estimation, errors in the albedo estimation can lead to significant artifacts in the relit image.
+$$ \widehat{\mathbf{A}} = \widehat{\mathcal{A}}(\mathbf{I}_\text{nat}) $$ {#eq-albedo-direct}
 
-$$ \hat{A} = F(I_\text{nat}; \theta_A) $$ {#eq-albedo-direct}
+Even more consequential is the fact that albedo estimation can rely on other estimated AOVs, such as the surface normals, which can further propagate errors. For example, some methods for albedo estimation use the estimated surface normals to compute the shading component of the image, which is then subtracted from the input image field to estimate the albedo.
 
-Even more consequential is the fact that albedo estimation can rely on other estimated AOVs, such as the surface normals, which can further propagate errors. For example, some methods for albedo estimation use the estimated surface normals to compute the shading component of the image, which is then subtracted from the input image to estimate the albedo.
+$$ \widehat{\mathbf{A}} = (\widehat{\mathcal{A}} \circ \widehat{\mathcal{N}})(\widehat{Z}) = (\widehat{\mathcal{A}} \circ \widehat{\mathcal{N}} \circ \nabla \circ \widehat{\mathcal{D}})(\mathbf{I}_\text{nat}) $$ {#eq-albedo-composite}
 
-$$ \hat{A} = F(F(\hat{D}; \theta_N); \theta_A) = F(F(\nabla F(I_\text{nat}; \theta_D); \theta_N); \theta_A) $$ {#eq-albedo-composite}
+All of these estimates potentially compound error, but may be preferred to the direct estimation of the AOVs from the input image field (@eq-albedo-direct), as they break down the problem into more manageable subproblems.
 
-All of these estimates potentially compound error, but may be preferred to the direct estimation of the AOVs from the input image (@eq-albedo-direct), as they break down the problem into more manageable subproblems.
-
-As @fig-relighting-depth shows, the two main AOVs we are using for relighting, $\hat{N}$ and $\hat{A}$, are both estimated from the input image $I_\text{nat}$ but indirectly through the depth estimation, $\hat{D}$.
+As @fig-relighting-depth shows, the two main AOVs we are using for relighting, $\widehat{\mathbf{N}}$ and $\widehat{\mathbf{A}}$, are both estimated from the input image field $\mathbf{I}_\text{nat}$ but indirectly through the depth estimation, $\widehat{Z}$.
 
 ```{mermaid}
 %%| label: fig-relighting-depth
@@ -169,13 +180,13 @@ As @fig-relighting-depth shows, the two main AOVs we are using for relighting, $
 %%| fig-width: 6
 %%| out-width: 100%
 graph LR
-    I["$$I_\text{nat}$$"]
-    D["$$\hat{D}$$"]
-    N["$$\hat{N}$$"]
-    A["$$\hat{A}$$"]
+    I["$$\mathbf{I}_\text{nat}$$"]
+    D["$$\widehat{Z}$$"]
+    N["$$\widehat{\mathbf{N}}$$"]
+    A["$$\widehat{\mathbf{A}}$$"]
     L["$$L_\text{rel}$$"]
-    R["$$\mathcal{R}[\hat{N}, \hat{A}; L_\text{rel}]$$"]
-    O["$$I'_\text{nat}$$"]
+    R["$$\mathcal{R}(\widehat{\mathbf{N}}, \widehat{\mathbf{A}}; L_\text{rel})$$"]
+    O["$$\mathbf{I}'_\text{nat}$$"]
 
     I --> D
 
@@ -193,15 +204,15 @@ graph LR
 
 ### Successive versus direct estimation of AOVs
 
-The estimated AOVs, $\hat{D}$, $\hat{N}$, and $\hat{A}$, are all subject to some amount of error:
+The estimated fields, $\widehat{Z}$, $\widehat{\mathbf{N}}$, and $\widehat{\mathbf{A}}$, are all subject to some amount of error:
 
-$$ \hat{D} = D + \epsilon_D $$ {#eq-error}
-$$ \hat{N} = N + \epsilon_N $$ {#eq-error-normal}
-$$ \hat{A} = A + \epsilon_A $$ {#eq-error-albedo}
+$$ \widehat{Z} = Z + \epsilon_Z $$ {#eq-error}
+$$ \widehat{\mathbf{N}} = \mathbf{N} + \boldsymbol{\epsilon}_N $$ {#eq-error-normal}
+$$ \widehat{\mathbf{A}} = \mathbf{A} + \boldsymbol{\epsilon}_A $$ {#eq-error-albedo}
 
-And, obviously, if the components used in AOV estimation are themselves estimated, (as in   @fig-relighting-depth), the errors will compound.
+And, obviously, if the components used in AOV estimation are themselves estimated, (as in @fig-relighting-depth), the errors will compound.
 
-The errors are not constant across the image, and in the case of neural estimation methods, the errors can be highly structured and correlated across the image. XXXXX
+The errors are not constant across the image, and in the case of neural estimation methods, the errors can be highly structured and correlated across the image.
 
 ## Future directions
 
