@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+
 :root {
   /* Primary Palette */
   --rit-orange: #F76902;
@@ -21,7 +23,7 @@
 
 /* Global Typography & Layout */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: var(--rit-black);
   background-color: var(--rit-white);
   line-height: 1.6;
@@ -32,7 +34,7 @@ body {
 
 /* Clear, geometric visual hierarchy */
 h1, h2, h3, h4, h5, h6 {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 700;
   color: var(--rit-black);
   letter-spacing: -0.03em;
@@ -244,7 +246,7 @@ rect.mermaid-loop {
 /* Code Block Styling - Flat, crisp borders */
 pre,
 code {
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-family: 'IBM Plex Mono', "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
   font-size: 0.85em;
   border-radius: 0 !important;
 }
