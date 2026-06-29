@@ -21,7 +21,7 @@ Don't take any of it seriously yet and feel free to reach out if you have magica
 
 The thoughts are largely AI-Free for now. 
 
-For our standard mathematical conventions, see [Mathematical Notation Standards](notation-preview.html).
+For our lab's standard mathematical conventions, see [Mathematical Notation Standards](notation-preview.html).
 :::
 
 ## Images, Pixels, and Image Fields
