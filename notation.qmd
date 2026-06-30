@@ -56,10 +56,16 @@ Following Alvy Ray Smith's principle ("A Pixel Is Not A Little Square"), we trea
 * **Continuous Fields:** Mappings from a coordinate space to a value space.
   * $I : \Omega \rightarrow \mathcal{V}$ where $\mathcal{V}$ is the value space (e.g., $\mathbb{R}^3$ for RGB color, $\mathbb{R}$ for scalar depth).
 * **Color Fields:** Typically denoted in bold: $\mathbf{I} : \Omega \rightarrow \mathbb{R}^3$.
+  * **The Capture-to-Perception Pipeline:** We distinguish three distinct layers of image representation:
+    1. *Physical Reality:* The actual scene radiance field $\mathbf{I}$ (ground-truth physical light field).
+    2. *Approximated Physical Reality:* The instrument-captured or estimated physical values, marked with a hat (e.g., $\widehat{\mathbf{I}}$ for the camera's raw sensor values, i.e., "RGB-hat").
+    3. *Perceptual Reality:* The perceptually plausible/useful approximation, decorated with a tilde (e.g., $\widetilde{\mathbf{I}}$ for perceived color, i.e., "RGB-tilde", reflecting color constancy, adaptation, and human visual utility rather than raw sensor response).
 * **Natural vs. Synthetic Source:**
   * **Natural Images:** $\mathbf{I}_\text{nat}$ (captured real-world continuous field).
   * **Synthetic Images:** $\mathbf{I}_\text{syn}$ (exact computer-generated continuous field).
-* **Estimations and Decorations:** Approximated or estimated fields are marked with a wide hat (e.g., $\widehat{Z}$ for estimated depth, $\widehat{\mathbf{N}}$ for estimated normals).
+* **Estimations and Decorations:** 
+  * **Physical Estimates:** Approximated or estimated fields of physical reality are marked with a wide hat (e.g., $\widehat{Z}$ or $\widehat{D}$ for estimated physical depth, $\widehat{\mathbf{N}}$ for estimated normals).
+  * **Perceptual Estimates:** Perceptually plausible or useful approximations (e.g., constrained by human psychophysical utility rather than metric physical accuracy) are decorated with a tilde or wide tilde (e.g., $\widetilde{Z}$ or $\widetilde{D}$ for a perceptually plausible depth representation, such as discrete depth planes).
 
 ## 5. Functional Operators and Tensor Composition
 Rather than coordinate-wise array operations, we formulate image processing as mappings between function spaces.

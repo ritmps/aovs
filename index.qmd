@@ -30,9 +30,15 @@ Photography is _roughly_ the process of mapping a 3D light field in the environm
 
 In the context of digital photography, the natural image is a 2D array of pixels, where each pixel value is a function of the irradiance (incident power per unit area) integrated over the sensor element's area, which corresponds to the scene radiance passing through the lens aperture. This is a simplification of the true light field, but a useful one for the purposes of this document. (See [@smithPixelNotLittle1995] for the canonical argument against this simplification.)
 
+This relationship points to a three-tier pipeline connecting physical reality to the human observer's experience:
+
+1. **Physical Reality ($\mathbf{I}$):** The true, objective radiance field of the environment.
+2. **Approximated Physical Reality ($\widehat{\mathbf{I}}$ / "RGB-hat"):** The instrument-captured version of this reality, containing raw sensor measurements. Because cameras are colorimeters only in the crudest sense, $\widehat{\mathbf{I}}$ represents a band-limited, sensor-dependent estimate of physical reality.
+3. **Perceptual Reality ($\widetilde{\mathbf{I}}$ / "RGB-tilde"):** The perceptually plausible and useful approximation constructed by the visual system. Because human observers are not "human colorimeters," our visual systems transform $\widehat{\mathbf{I}}$ using processes like color constancy, luminance adaptation, and psychological rendering into $\widetilde{\mathbf{I}}$, which prioritizes semantic utility (e.g., material recognition and object boundaries) over metric color matching.
+
 ## AOVs
 
-In computer graphics, an AOV is a separate rendering pass that captures a specific component of the rendered image, such as depth, normals, albedo, or specular reflections. They are typically 1:1 pixel maps so that, for each $RGB$ pixel, there is additional information concatenated with the visual information. For example, $RGBD$ images concatenate depth to the visual information^[The depth can be the real actual depth or an estimate. We use 'hat' notation for estimates, ala $\hat{D}$. In truth, $RGB$ are also estimates to some extent, but since they are captured or computed directly, we avoid the hat in this `context.]. Synthetic imagery renders the AOVs directly. Frequently they are the results of intermediate computations necessary for the final RGB image ^[AKA the so-called 'beauty pass'.], but this isn't always the case. For example, one could render an AOV of just the direct illumination from area lights and another AOV of just the emissive components. The advantage of AOVs is that they can be reassembled^[e.g. in compositing software] to produce the final RGB image using information beyond the simple radiance fields approximated with photorealistic rendering.
+In computer graphics, an AOV is a separate rendering pass that captures a specific component of the rendered image, such as depth, normals, albedo, or specular reflections. They are typically 1:1 pixel maps so that, for each $RGB$ pixel, there is additional information concatenated with the visual information. For example, $RGBD$ images concatenate depth to the visual information^[The depth can be the real actual depth, an estimate of physical depth (denoted as $\widehat{D}$ or $\widehat{Z}$), or a perceptually plausible/useful estimate (denoted as $\widetilde{D}$ or $\widetilde{Z}$). In truth, $RGB$ are also estimates to some extent, but since they are captured or computed directly, we avoid the decoration in this context.]. Synthetic imagery renders the AOVs directly. Frequently they are the results of intermediate computations necessary for the final RGB image ^[AKA the so-called 'beauty pass'.], but this isn't always the case. For example, one could render an AOV of just the direct illumination from area lights and another AOV of just the emissive components. The advantage of AOVs is that they can be reassembled^[e.g. in compositing software] to produce the final RGB image using information beyond the simple radiance fields approximated with photorealistic rendering.
 
 Unfortunately, in practical photography, the availability of this information is rather limited by the sensor package of the system. There _are_ some AOVs that can be captured with sensors, such as depth, via stereopsis and time-of-flight measurements. Your iPhone has several strategies to create an $RGBD$ image that augments the $RGB$ image with depth information. Alas, there are no sensors that can capture the individual components of the scene's radiance field, such as albedo, surface normals, specularities, as well as more complicated information such as how and which light sources contribute to the final rendered pixel.
 
@@ -83,6 +89,14 @@ For single-image depth estimation, the mapping from the input RGB field $\mathbf
 $$ \mathbf{I} \rightarrow \mathbf{I} \oplus \widehat{Z} \quad \text{where} \quad \widehat{Z} = \widehat{\mathcal{D}}(\mathbf{I}) $$ {#eq-rgb-to-rgbz}
 
 Here, $\widehat{Z}$ represents the estimated depth field derived from the input field $\mathbf{I}$ via the estimator operator $\widehat{\mathcal{D}}$. 
+
+#### Physical vs. Perceptual Depth
+
+Crucially, we must distinguish between estimates of physical depth ($\widehat{D}$ or $\widehat{Z}$) and perceptually useful or plausible approximations ($\widetilde{D}$ or $\widetilde{Z}$). 
+
+In computer vision, stereopsis and time-of-flight measurements are typically utilized to recover metric, physical depth, yielding a physical estimate $\widehat{Z}$. However, human stereopsis and visual perception operating under psychophysical utility yield more of a perceptually plausible estimate $\widetilde{Z}$. 
+
+For example, a human observer might easily organize a scene into three ordinal depth planes (foreground, midground, background). While a physical depth estimate $\widehat{Z}$ can be thresholded or mapped into three planes, the resulting discretization is fundamentally different from a perceptually useful approximation $\widetilde{Z}$ that is directly shaped by visual utility and task constraints. Thus, in perceptual computational photography and image editing, we often seek to align our algorithms with $\widetilde{Z}$ rather than raw physical reconstruction $\widehat{Z}$.
 
 
 ### Synthetic images
