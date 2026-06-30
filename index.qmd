@@ -56,7 +56,9 @@ By _relighting_ we mean the process of changing the lighting conditions of that 
 
 We can think of the operator that performs this relighting operation as a mapping from the original image field, $\mathbf{I}_\text{nat}$, and the new lighting condition, $L_\text{rel}$, to the relit image field, $\mathbf{I}'_\text{nat}$ —
 
-$$\mathbf{I}'_\text{nat} = \mathcal{R}(\mathbf{I}_\text{nat}; L_\text{rel})$$ {#eq-relighting}
+$$
+\mathbf{I}'_\text{nat} = \mathcal{R}(\mathbf{I}_\text{nat}; L_\text{rel})
+$$ {#eq-relighting}
 
 The primary difficulty here is that the captured image field, $\mathbf{I}_\text{nat}$, is a 2D projection of a 3D scene whose $RGB$ sample values contain the complex interactions between light and materials.^[There is a 'unbaking a cake' analogy here that we could deploy for explanation.]
 
@@ -70,7 +72,9 @@ With multiple images and depth information, the iPhone's software can better est
 
 If we have access to depth, we can simulate depth of field by blurring the image based on the depth values. We can estimate the depth field via stereopsis between the multiple cameras combined with the somewhat coarse depth information from a single depth sensor.
 
-$$\widehat{Z} = \widehat{\mathcal{D}}(\mathbf{I}_1, \mathbf{I}_2, \dots, \mathbf{I}_m, \mathbf{I}_d)$$ {#eq-depth-est}
+$$
+\widehat{Z} = \widehat{\mathcal{D}}(\mathbf{I}_1, \mathbf{I}_2, \dots, \mathbf{I}_m, \mathbf{I}_d)
+$$ {#eq-depth-est}
 
 Here, the functional operator $\widehat{\mathcal{D}}$ in @eq-depth-est uses the continuous image fields and coarse depth sensor information to estimate the depth field, $\widehat{Z}$.
 
@@ -86,7 +90,9 @@ We can look to early high-dynamic range radiance map recovery efforts [@debevecR
 
 For single-image depth estimation, the mapping from the input RGB field $\mathbf{I}$ to an augmented RGBZ representation can be formulated as:
 
-$$ \mathbf{I} \rightarrow \mathbf{I} \oplus \widehat{Z} \quad \text{where} \quad \widehat{Z} = \widehat{\mathcal{D}}(\mathbf{I}) $$ {#eq-rgb-to-rgbz}
+$$
+\mathbf{I} \rightarrow \mathbf{I} \oplus \widehat{Z} \quad \text{where} \quad \widehat{Z} = \widehat{\mathcal{D}}(\mathbf{I})
+$$ {#eq-rgb-to-rgbz}
 
 Here, $\widehat{Z}$ represents the estimated depth field derived from the input field $\mathbf{I}$ via the estimator operator $\widehat{\mathcal{D}}$. 
 
@@ -168,38 +174,54 @@ graph LR
 
 Here, $\widehat{\mathbf{N}}$ and $\widehat{\mathbf{A}}$ are the estimated normal and albedo fields, respectively, which are predicted from the input natural image field $\mathbf{I}_\text{nat}$. We run into an interesting problem here - how do we get the components necessary for deriving $\widehat{\mathbf{N}}$ and $\widehat{\mathbf{A}}$ from the input image? If we decide to go directly from $\mathbf{I}_\text{nat}$ to $\widehat{\mathbf{N}}$ and $\widehat{\mathbf{A}}$, we are essentially treating the problem as a black-box regression problem, one where we are trying to learn a direct mapping from the input image field to the AOVs.
 
-$$ \widehat{\mathbf{N}} = \widehat{\mathcal{N}}(\mathbf{I}_\text{nat}) $$ {#eq-normal-direct}
+$$
+\widehat{\mathbf{N}} = \widehat{\mathcal{N}}(\mathbf{I}_\text{nat})
+$$ {#eq-normal-direct}
 
 This approach is direct and straightforward _in theory_, but in practice it can be almost impossible to learn such a mapping. The more complicated the lighting and object interactions in the scene, the more difficult still. Even with a complete geometric description of the scene this is computationally expensive, and we are trying to learn this mapping from a single image, which is a highly ill-posed problem. The model would need to learn to infer the underlying geometry and material properties of the scene from the pixel values alone, which is a very difficult task.
 
 Perhaps it would make sense to work from depth information to surface normals, as depth estimation from a single image is a well-studied problem in computer vision.^[Yet not completely _solved_ either.] We could first estimate the depth field, $\widehat{Z}$, from the input image field, and then use the depth field to compute the surface normals.
 
-$$ \widehat{Z} = \widehat{\mathcal{D}}(\mathbf{I}_\text{nat}) $$ {#eq-depth-direct}
+$$
+\widehat{Z} = \widehat{\mathcal{D}}(\mathbf{I}_\text{nat})
+$$ {#eq-depth-direct}
 
-$$ \widehat{\mathbf{N}} = \widehat{\mathcal{N}}(\widehat{Z}) $$ {#eq-normal-from-depth}
+$$
+\widehat{\mathbf{N}} = \widehat{\mathcal{N}}(\widehat{Z})
+$$ {#eq-normal-from-depth}
 
-$$ \widehat{\mathbf{N}} = (\widehat{\mathcal{N}} \circ \widehat{\mathcal{D}})(\mathbf{I}_\text{nat}) $$ {#eq-normal-composite}
+$$
+\widehat{\mathbf{N}} = (\widehat{\mathcal{N}} \circ \widehat{\mathcal{D}})(\mathbf{I}_\text{nat})
+$$ {#eq-normal-composite}
 
 This approach (@eq-normal-composite) has the advantage of breaking down the problem into two stages (@eq-depth-direct and @eq-normal-from-depth), which may be easier to solve than trying to learn a direct mapping from the input image field to the AOVs (@eq-normal-direct). However, it also introduces additional sources of error, as any errors in the depth estimation will propagate to the surface normal estimation and ultimately to the relighting results.
 
 To compute the normals from the depth field, we typically use the spatial gradients $\nabla \widehat{Z}$:
 
-$$ \widehat{\mathbf{N}} = \widehat{\mathcal{N}}(\nabla \widehat{Z}) = (\widehat{\mathcal{N}} \circ \nabla \circ \widehat{\mathcal{D}})(\mathbf{I}_\text{nat}) $$ {#eq-normal-gradient}
+$$
+\widehat{\mathbf{N}} = \widehat{\mathcal{N}}(\nabla \widehat{Z}) = (\widehat{\mathcal{N}} \circ \nabla \circ \widehat{\mathcal{D}})(\mathbf{I}_\text{nat})
+$$ {#eq-normal-gradient}
 
 
 Alas, the method in @eq-normal-gradient can be very noisy and lead to significant errors in the estimated normals. This is especially problematic in regions of the image where there are sharp depth discontinuities, such as object boundaries, where the depth estimation is often less accurate.
 
 Even worse, before we can even get to the point of estimating the normals, we need to estimate the depth from a single image, which is itself a highly ill-posed problem. And again, the depth computations rely on gradient computations, which can be brittle and noise-sensitive.
 
-$$\nabla \mathbf{I}_\text{nat} \rightarrow \widehat{Z}, \nabla \widehat{Z} \rightarrow \widehat{\mathbf{N}}, \nabla \widehat{\mathbf{N}} \rightarrow \widehat{\mathbf{A}}$$ {#eq-gradient-nightmare} 
+$$
+\nabla \mathbf{I}_\text{nat} \rightarrow \widehat{Z}, \nabla \widehat{Z} \rightarrow \widehat{\mathbf{N}}, \nabla \widehat{\mathbf{N}} \rightarrow \widehat{\mathbf{A}}
+$$ {#eq-gradient-nightmare} 
 
 Computation of the albedo field, $\widehat{\mathbf{A}}$, is also a challenging problem. Different decomposition techniques have been proposed to essentially subtract the effects of lighting from the input image field to estimate the albedo. And, as with the normal estimation, errors in the albedo estimation can lead to significant artifacts in the relit image.
 
-$$ \widehat{\mathbf{A}} = \widehat{\mathcal{A}}(\mathbf{I}_\text{nat}) $$ {#eq-albedo-direct}
+$$
+\widehat{\mathbf{A}} = \widehat{\mathcal{A}}(\mathbf{I}_\text{nat})
+$$ {#eq-albedo-direct}
 
 Even more consequential is the fact that albedo estimation can rely on other estimated AOVs, such as the surface normals, which can further propagate errors. For example, some methods for albedo estimation use the estimated surface normals to compute the shading component of the image, which is then subtracted from the input image field to estimate the albedo.
 
-$$ \widehat{\mathbf{A}} = (\widehat{\mathcal{A}} \circ \widehat{\mathcal{N}})(\widehat{Z}) = (\widehat{\mathcal{A}} \circ \widehat{\mathcal{N}} \circ \nabla \circ \widehat{\mathcal{D}})(\mathbf{I}_\text{nat}) $$ {#eq-albedo-composite}
+$$
+\widehat{\mathbf{A}} = (\widehat{\mathcal{A}} \circ \widehat{\mathcal{N}})(\widehat{Z}) = (\widehat{\mathcal{A}} \circ \widehat{\mathcal{N}} \circ \nabla \circ \widehat{\mathcal{D}})(\mathbf{I}_\text{nat})
+$$ {#eq-albedo-composite}
 
 All of these estimates potentially compound error, but may be preferred to the direct estimation of the AOVs from the input image field (@eq-albedo-direct), as they break down the problem into more manageable subproblems.
 
@@ -237,17 +259,24 @@ graph LR
 
 The estimated fields, $\widehat{Z}$, $\widehat{\mathbf{N}}$, and $\widehat{\mathbf{A}}$, are all subject to some amount of error:
 
-$$ \widehat{Z} = Z + \epsilon_Z $$ {#eq-error}
-$$ \widehat{\mathbf{N}} = \mathbf{N} + \boldsymbol{\epsilon}_N $$ {#eq-error-normal}
-$$ \widehat{\mathbf{A}} = \mathbf{A} + \boldsymbol{\epsilon}_A $$ {#eq-error-albedo}
+$$
+\widehat{Z} = Z + \epsilon_Z
+$$ {#eq-error}
+$$
+\widehat{\mathbf{N}} = \mathbf{N} + \boldsymbol{\epsilon}_N
+$$ {#eq-error-normal}
+$$
+\widehat{\mathbf{A}} = \mathbf{A} + \boldsymbol{\epsilon}_A
+$$ {#eq-error-albedo}
 
 And, obviously, if the components used in AOV estimation are themselves estimated, (as in @fig-relighting-depth), the errors will compound.
 
 The errors are not constant across the image, and in the case of neural estimation methods, the errors can be highly structured and correlated across the image.
 
-## Future directions
+## Where We're Going With This
 
 Finally, it's worth noting that even with the best AOV estimation techniques, there will always be some level of uncertainty in the estimated AOVs. This uncertainty can lead to artifacts in the relit image, especially when the lighting conditions are significantly different from those in the original image. Therefore, it's important to consider the limitations of AOV estimation when performing relighting on natural images.
 
 We propose that we should consider perceptually relevant metrics for evaluating the quality of relit images, rather than relying solely on pixel-wise error metrics. This is because the ultimate goal of relighting is to create visually appealing images, and perceptual metrics may better capture the quality of the relit images from a human perspective. As we know from basic psychophysics, human perception is not always aligned with pixel-wise accuracy, and perceptual metrics may provide a more meaningful evaluation of the relighting results.
 
+## ...
