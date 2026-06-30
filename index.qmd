@@ -32,9 +32,9 @@ In the context of digital photography, the natural image is a 2D array of pixels
 
 ## AOVs
 
-In computer graphics, an AOV is a separate rendering pass that captures a specific component of the rendered image, such as depth, normals, albedo, or specular reflections. Synthetic imagery renders the AOVs directly. Frequently they are the results of intermediate computations necessary for the final RGB image ^[AKA the so-called 'beauty pass'.], but this isn't always the case. For example, one could render an AOV of just the direct illumination from area lights and another AOV of just the emissive components. The advantage of AOVs is that they can be reassembled^[e.g. in compositing software] to produce the final RGB image using information beyond the simple radiance fields approximated with photorealistic rendering.
+In computer graphics, an AOV is a separate rendering pass that captures a specific component of the rendered image, such as depth, normals, albedo, or specular reflections. They are typically 1:1 pixel maps so that, for each $RGB$ pixel, there is additional information concatenated with the visual information. For example, $RGBD$ images concatenate depth to the visual information^[The depth can be the real actual depth or an estimate. We use 'hat' notation for estimates, ala $\hat{D}$. In truth, $RGB$ are also estimates to some extent, but since they are captured or computed directly, we avoid the hat in this `context.]. Synthetic imagery renders the AOVs directly. Frequently they are the results of intermediate computations necessary for the final RGB image ^[AKA the so-called 'beauty pass'.], but this isn't always the case. For example, one could render an AOV of just the direct illumination from area lights and another AOV of just the emissive components. The advantage of AOVs is that they can be reassembled^[e.g. in compositing software] to produce the final RGB image using information beyond the simple radiance fields approximated with photorealistic rendering.
 
-Unfortunately, in practical photography, the availability of this information is rather limited by the sensor package of the system. There _are_ some AOVs that can be captured with sensors, such as depth, via stereopsis and time-of-flight measurements. Your iPhone has several strategies to create an $RGBD$ image that augments the $RGB$ image with depth information. Alas, there are no sensors that can capture the individual components of the scene's radiance field, such as albedo, surface normals, or specularities.
+Unfortunately, in practical photography, the availability of this information is rather limited by the sensor package of the system. There _are_ some AOVs that can be captured with sensors, such as depth, via stereopsis and time-of-flight measurements. Your iPhone has several strategies to create an $RGBD$ image that augments the $RGB$ image with depth information. Alas, there are no sensors that can capture the individual components of the scene's radiance field, such as albedo, surface normals, specularities, as well as more complicated information such as how and which light sources contribute to the final rendered pixel.
 
 However, some AI techniques have been developed that allow one to estimate these components from a single $RGB$ image. 
 
@@ -42,7 +42,7 @@ However, some AI techniques have been developed that allow one to estimate these
 
 Let's examine the following problem -
 
-> Given a natural image continuous field $\mathbf{I}_\text{nat}$, relight the image under a new lighting condition, $L_\text{rel}$.
+> Given a natural image $\mathbf{I}_\text{nat}$, relight the image under a new lighting condition, $L_\text{rel}$.
 
 By _natural image_ we mean a continuous image field of a real-world scene as captured by a photographic camera.
 
@@ -177,7 +177,9 @@ Alas, the method in @eq-normal-gradient can be very noisy and lead to significan
 
 Even worse, before we can even get to the point of estimating the normals, we need to estimate the depth from a single image, which is itself a highly ill-posed problem. And again, the depth computations rely on gradient computations, which can be brittle and noise-sensitive.
 
-$$\nabla \mathbf{I}_\text{nat} \rightarrow \widehat{Z}, \nabla \widehat{Z} \rightarrow \widehat{\mathbf{N}}, \nabla \widehat{\mathbf{N}} \rightarrow \widehat{\mathbf{A}}$$ {#eq-gradient-nightmare}Computation of the albedo field, $\widehat{\mathbf{A}}$, is also a challenging problem. Different decomposition techniques have been proposed to essentially subtract the effects of lighting from the input image field to estimate the albedo. And, as with the normal estimation, errors in the albedo estimation can lead to significant artifacts in the relit image.
+$$\nabla \mathbf{I}_\text{nat} \rightarrow \widehat{Z}, \nabla \widehat{Z} \rightarrow \widehat{\mathbf{N}}, \nabla \widehat{\mathbf{N}} \rightarrow \widehat{\mathbf{A}}$$ {#eq-gradient-nightmare} 
+
+Computation of the albedo field, $\widehat{\mathbf{A}}$, is also a challenging problem. Different decomposition techniques have been proposed to essentially subtract the effects of lighting from the input image field to estimate the albedo. And, as with the normal estimation, errors in the albedo estimation can lead to significant artifacts in the relit image.
 
 $$ \widehat{\mathbf{A}} = \widehat{\mathcal{A}}(\mathbf{I}_\text{nat}) $$ {#eq-albedo-direct}
 
