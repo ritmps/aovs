@@ -11,6 +11,7 @@ authors:
     corresponding: true
 date-modified: last-modified
 bibliography: references.bib
+nocite: '@*'
 ---
 
 ::: {.callout-warning}
@@ -280,3 +281,6 @@ Finally, it's worth noting that even with the best AOV estimation techniques, th
 We propose that we should consider perceptually relevant metrics for evaluating the quality of relit images, rather than relying solely on pixel-wise error metrics. This is because the ultimate goal of relighting is to create visually appealing images, and perceptual metrics may better capture the quality of the relit images from a human perspective. As we know from basic psychophysics, human perception is not always aligned with pixel-wise accuracy, and perceptual metrics may provide a more meaningful evaluation of the relighting results.
 
 ## ...
+
+# References
+
