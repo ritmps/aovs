@@ -11,5 +11,11 @@ _Attic
 
 /.quarto/
 **/*.quarto_ipynb
+*.embed.ipynb
+*.out.ipynb
+*.subarticle.xml
+*.docx
+site_libs/
 
 /.luarc.json
+
