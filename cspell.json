@@ -2,14 +2,24 @@
   "version": "0.2",
   "language": "en",
   "words": [
+    "albedo",
+    "AOV",
+    "AOVs",
+    "Backpropagation",
+    "BRDF",
+    "Connectionist",
     "convolutional",
+    "Enoki",
+    "Gibsonian",
+    "homoiconic",
+    "Mitsuba",
+    "Neurosymbolic",
+    "plenoptic",
+    "relighting",
     "stereopsis",
     "subproblems",
     "unbaking",
-    "AOV",
-    "AOVs",
-    "albedo",
-    "relighting"
+    "wireframes"
   ],
   "import": [
     "@cspell/dict-latex/cspell-ext.json"
