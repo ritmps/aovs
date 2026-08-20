@@ -285,7 +285,7 @@ The errors are not constant across the image, and in the case of neural estimati
 
 Finally, it's worth noting that even with the best AOV estimation techniques, there will always be some level of uncertainty in the estimated AOVs. This uncertainty can lead to artifacts in the relit image, especially when the lighting conditions are significantly different from those in the original image. Therefore, it's important to consider the limitations of AOV estimation when performing relighting on natural images.
 
-We propose that we should consider perceptually relevant metrics for evaluating the quality of relit images, rather than relying solely on pixel-wise error metrics. This is because the ultimate goal of relighting is to create visually appealing images, and perceptual metrics may better capture the quality of the relit images from a human perspective. As we know from basic psychophysics, human perception is not always aligned with pixel-wise accuracy, and perceptual metrics may provide a more meaningful evaluation of the relighting results.[@ColorfulDiffuseIntrinsic]
+We propose that we should consider perceptually relevant metrics for evaluating the quality of relit images, rather than relying solely on pixel-wise error metrics. This is because the ultimate goal of relighting is to create visually appealing images, and perceptual metrics may better capture the quality of the relit images from a human perspective. As we know from basic psychophysics, human perception is not always aligned with pixel-wise accuracy, and perceptual metrics may provide a more meaningful evaluation of the relighting results.[@careagaColorfulDiffuseIntrinsic2024]
 
 ## ...
 
