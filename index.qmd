@@ -34,8 +34,15 @@ In the context of digital photography, the natural image is a 2D array of pixels
 This relationship points to a three-tier pipeline connecting physical reality to the human observer's experience:
 
 1. **Physical Reality ($\mathbf{I}$):** The true, objective radiance field of the environment.
-2. **Approximated Physical Reality ($\widehat{\mathbf{I}}$ / "RGB-hat"):** The instrument-captured version of this reality, containing raw sensor measurements. Because cameras are colorimeters only in the crudest sense, $\widehat{\mathbf{I}}$ represents a band-limited, sensor-dependent estimate of physical reality.
-3. **Perceptual Reality ($\widetilde{\mathbf{I}}$ / "RGB-tilde"):** The perceptually plausible and useful approximation constructed by the visual system. Because human observers are not "human colorimeters," our visual systems transform $\widehat{\mathbf{I}}$ using processes like color constancy, luminance adaptation, and psychological rendering into $\widetilde{\mathbf{I}}$, which prioritizes semantic utility (e.g., material recognition and object boundaries) over metric color matching.
+2. **Approximated Physical Reality ($\widehat{\mathbf{I}}$ / "RGB-hat"):** The instrument-captured version of this reality, containing raw sensor measurements. Because cameras are colorimeters only in the crudest sense, $\widehat{\mathbf{I}}$ represents a band-limited, sensor-dependent estimate of physical reality formed by computationally resampling the continuous radiance field $\mathbf{I}$ over a spatial domain $\Omega \subset \mathbb{R}^2$:
+$$
+\widehat{\mathbf{I}} = \mathcal{S}_{\Omega}(\mathbf{I}) \quad \text{where for } \mathbf{x} \in \Omega, \quad \widehat{\mathbf{I}}(\mathbf{x}) = \int_{\mathbb{R}^2} \mathbf{I}(\mathbf{y}) \, k(\mathbf{x}, \mathbf{y}) \, d\mathbf{y}
+$$
+3. **Perceptual Reality ($\widetilde{\mathbf{I}}$ / "RGB-tilde"):** The perceptually plausible and useful approximation constructed by the visual system. Because human observers are not "human colorimeters," our visual systems transform $\widehat{\mathbf{I}}$ using processes like color constancy, luminance adaptation, and psychological rendering into $\widetilde{\mathbf{I}}$, which prioritizes semantic utility (e.g., material recognition and object boundaries) over metric color matching. Unlike the structured grid $\Omega$ of instrument sensors, perceptual reality is sampled over an *unstructured*, spatially non-uniform domain $\mathcal{U} \subset \mathbb{R}^2$ (reflecting retinal foveation, receptor density gradients, and dynamic receptive fields):
+$$
+\widetilde{\mathbf{I}} = \mathcal{P}_{\mathcal{U}}(\widehat{\mathbf{I}}) = (\mathcal{P}_{\mathcal{U}} \circ \mathcal{S}_{\Omega})(\mathbf{I}) \quad \text{where for } \mathbf{u} \in \mathcal{U}, \quad \widetilde{\mathbf{I}}(\mathbf{u}) = \phi \left( \int_{\Omega} \widehat{\mathbf{I}}(\mathbf{x}) \, w(\mathbf{u}, \mathbf{x}) \, d\mathbf{x} \right)
+$$
+where $w(\mathbf{u}, \mathbf{x})$ denotes spatially varying receptive fields over unstructured locations $\mathbf{u} \in \mathcal{U}$, and $\phi(\cdot)$ captures non-linear perceptual mechanisms.
 
 ## AOVs
 

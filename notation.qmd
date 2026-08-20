@@ -57,9 +57,17 @@ Following Alvy Ray Smith's principle ("A Pixel Is Not A Little Square"), we trea
   * $I : \Omega \rightarrow \mathcal{V}$ where $\mathcal{V}$ is the value space (e.g., $\mathbb{R}^3$ for RGB color, $\mathbb{R}$ for scalar depth).
 * **Color Fields:** Typically denoted in bold: $\mathbf{I} : \Omega \rightarrow \mathbb{R}^3$.
   * **The Capture-to-Perception Pipeline:** We distinguish three distinct layers of image representation:
-    1. *Physical Reality:* The actual scene radiance field $\mathbf{I}$ (ground-truth physical light field).
-    2. *Approximated Physical Reality:* The instrument-captured or estimated physical values, marked with a hat (e.g., $\widehat{\mathbf{I}}$ for the camera's raw sensor values, i.e., "RGB-hat").
-    3. *Perceptual Reality:* The perceptually plausible/useful approximation, decorated with a tilde (e.g., $\widetilde{\mathbf{I}}$ for perceived color, i.e., "RGB-tilde", reflecting color constancy, adaptation, and human visual utility rather than raw sensor response).
+    1. *Physical Reality:* The continuous, objective scene radiance field $\mathbf{I}$ (ground-truth physical light field).
+    2. *Approximated Physical Reality:* The instrument-captured or estimated physical values, marked with a hat (e.g., $\widehat{\mathbf{I}}$ for "RGB-hat"). Formally, $\widehat{\mathbf{I}}$ is a computational/instrumental resampling of $\mathbf{I}$ over a spatial domain $\Omega \subset \mathbb{R}^2$ via a sampling operator $\mathcal{S}_\Omega$:
+       $$
+       \widehat{\mathbf{I}} = \mathcal{S}_{\Omega}(\mathbf{I}) \quad \text{where for } \mathbf{x} \in \Omega, \quad \widehat{\mathbf{I}}(\mathbf{x}) = \int_{\mathbb{R}^2} \mathbf{I}(\mathbf{y}) \, k(\mathbf{x}, \mathbf{y}) \, d\mathbf{y}
+       $$
+       with kernel $k(\mathbf{x}, \mathbf{y})$ capturing optical point spread functions (PSF), sensor spectral sensitivity, and finite spatial sensor element integration over $\Omega$.
+    3. *Perceptual Reality:* The perceptually plausible/useful approximation, decorated with a tilde (e.g., $\widetilde{\mathbf{I}}$ for perceived color, i.e., "RGB-tilde", reflecting color constancy, adaptation, and human visual utility). Unlike instrument capture on a regular spatial grid $\Omega$, perceptual sampling operates over an *unstructured*, spatially non-uniform domain $\mathcal{U} \subset \mathbb{R}^2$ (e.g., retinal foveation gradients and receptive fields) via a perceptual transformation operator $\mathcal{P}_{\mathcal{U}}$:
+       $$
+       \widetilde{\mathbf{I}} = \mathcal{P}_{\mathcal{U}}(\widehat{\mathbf{I}}) = (\mathcal{P}_{\mathcal{U}} \circ \mathcal{S}_{\Omega})(\mathbf{I}) \quad \text{where for } \mathbf{u} \in \mathcal{U}, \quad \widetilde{\mathbf{I}}(\mathbf{u}) = \phi \left( \int_{\Omega} \widehat{\mathbf{I}}(\mathbf{x}) \, w(\mathbf{u}, \mathbf{x}) \, d\mathbf{x} \right)
+       $$
+       where $w(\mathbf{u}, \mathbf{x})$ represents spatially varying receptive field weights across the unstructured domain $\mathcal{U}$, and $\phi(\cdot)$ accounts for non-linear psychological rendering, adaptation, and gain control.
 * **Natural vs. Synthetic Source:**
   * **Natural Images:** $\mathbf{I}_\text{nat}$ (captured real-world continuous field).
   * **Synthetic Images:** $\mathbf{I}_\text{syn}$ (exact computer-generated continuous field).
