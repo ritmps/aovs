@@ -3,7 +3,8 @@ project:
 
 manuscript:
   article: index.qmd
-  notebooks: []
+  notebooks:
+    - notation.qmd
 
 filters:
   - status-callout.lua

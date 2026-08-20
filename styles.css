@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+
 :root {
   /* Primary Palette */
   --rit-orange: #F76902;
@@ -5,10 +7,10 @@
   --rit-black: #000000;
 
   /* Secondary Palette - Neutrals */
-  --rit-cool-gray-light: #D0D3D4;
-  --rit-cool-gray-medium: #A2AAAD;
+  --rit-cool-gray-light: #F2F2F2;
+  --rit-cool-gray-medium: #D0D3D4;
   --rit-cool-gray-dark: #7C878E;
-  --rit-warm-gray-light: #D7D2CB;
+  --rit-warm-gray-light: #F7F5F0;
   --rit-warm-gray-medium: #ACA39A;
 
   /* Accents */
@@ -19,17 +21,37 @@
   --rit-yellow: #F6BE00;
 }
 
-/* Global Typography & Links */
+/* Global Typography & Layout */
 body {
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: var(--rit-black);
+  background-color: var(--rit-white);
+  line-height: 1.6;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  text-align: left; /* Swiss style favors ragged-right */
 }
+
+/* Clear, geometric visual hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  color: var(--rit-black);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+  border-radius: 0 !important;
+}
+
+h1 { font-size: 2.2em; }
+h2 { font-size: 1.6em; border-bottom: 2px solid var(--rit-black); padding-bottom: 0.3em; }
+h3 { font-size: 1.3em; }
 
 a {
   color: var(--rit-teal);
   text-decoration: none;
-  transition: color 0.2s ease-in-out;
+  transition: color 0.15s ease-in-out;
 }
 
 a:hover {
@@ -44,30 +66,31 @@ mjx-container {
   font-size: 1em !important;
 }
 
-/* Header Styling */
+/* Header Styling - Stark, flat, geometric banner */
 header#title-block-header,
 .quarto-title-banner,
 .quarto-title-block {
   background-color: var(--rit-orange) !important;
   color: var(--rit-white) !important;
   border: none !important;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 3em 2em !important;
-  margin-bottom: 3em !important;
+  border-radius: 0 !important;
+  padding: 4em 2.5em !important;
+  margin-bottom: 3.5em !important;
 }
 
 header#title-block-header *,
 .quarto-title-block *,
 .quarto-title-banner * {
   color: var(--rit-white) !important;
+  border-radius: 0 !important;
 }
 
 .quarto-title-meta-heading {
   text-transform: uppercase;
-  font-size: 0.75em;
-  letter-spacing: 0.05em;
+  font-size: 0.7em;
+  letter-spacing: 0.1em;
   font-weight: 700;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 /* Sidebar & TOC */
@@ -75,21 +98,24 @@ header#title-block-header *,
 #quarto-margin-sidebar,
 .sidebar nav,
 nav#TOC {
-  font-size: 0.9em;
+  font-size: 0.85em;
   color: var(--rit-cool-gray-dark);
 }
 
 nav#TOC h2 {
   color: var(--rit-black);
-  font-size: 1.1em;
-  font-weight: 600;
-  border-bottom: 2px solid var(--rit-orange);
-  padding-bottom: 0.5em;
+  font-size: 1em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--rit-black);
+  padding-bottom: 0.4em;
   margin-bottom: 1em;
+  border-radius: 0 !important;
 }
 
 nav#TOC ul {
-  padding-left: 1em;
+  padding-left: 0.8em;
 }
 
 nav#TOC a {
@@ -100,24 +126,41 @@ nav#TOC a:hover {
   color: var(--rit-orange);
 }
 
-/* Block quotes & Notes */
+/* Block quotes - Purely geometric, no rounded corners */
 blockquote {
-  border-left: 5px solid var(--rit-orange);
+  border-left: 6px solid var(--rit-orange);
   background-color: var(--rit-warm-gray-light);
-  padding: 1em 1.5em;
+  color: var(--rit-black);
+  padding: 1.2em 1.8em;
   margin: 2em 0;
-  font-style: italic;
-  border-radius: 0 4px 4px 0;
+  font-style: normal;
+  border-radius: 0 !important;
+  border-top: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+}
+
+/* Callouts - Strict flat borders, no curves */
+.callout,
+.callout-header,
+.callout-body,
+.callout-container,
+.callout-title {
+  border-radius: 0 !important;
+  border-top: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
 }
 
 /* Citations */
 .citation,
 .footnote-ref {
   color: var(--rit-purple);
-  font-weight: 600;
+  font-weight: 700;
 }
 
-/* Figure & Float Layout (from fxp) */
+/* Figure & Float Layout */
 .figure {
   display: flex;
   justify-content: center;
@@ -135,16 +178,17 @@ blockquote {
 .quarto-float-caption-bottom::before {
   content: "";
   display: block;
-  width: 20%;
+  width: 15%;
   height: 2px;
-  background-color: rgb(223, 222, 222);
+  background-color: var(--rit-black);
   position: absolute;
   top: 0;
   left: 0;
 }
 
 .quarto-float {
-  margin-bottom: 1.5em;
+  margin-bottom: 2em;
+  border-radius: 0 !important;
 }
 
 /* Mermaid Customization */
@@ -156,12 +200,15 @@ blockquote {
 .mermaid .node circle,
 .mermaid .node polygon {
   fill: var(--rit-white) !important;
-  stroke: var(--rit-orange) !important;
-  stroke-width: 2px !important;
+  stroke: var(--rit-black) !important;
+  stroke-width: 1.5px !important;
+  rx: 0 !important; /* Forces rectangle nodes to be sharp-edged */
+  ry: 0 !important;
 }
 
 .mermaid .edgePath path {
   stroke: var(--rit-cool-gray-dark) !important;
+  stroke-width: 1.5px !important;
 }
 
 .mermaid .label {
@@ -170,44 +217,55 @@ blockquote {
 
 /* Mermaid Loop Styling (from fxp) */
 rect.mermaid-loop {
-  fill: #f9f9a3 !important;
-  stroke: #333 !important;
-  stroke-width: 2px !important;
+  fill: var(--rit-cool-gray-light) !important;
+  stroke: var(--rit-black) !important;
+  stroke-width: 1.5px !important;
+  rx: 0 !important;
+  ry: 0 !important;
 }
 
 .loopLine {
-  stroke: #333 !important;
-  stroke-width: 2px !important;
-}
-
-.labelBox {
-  fill: #f9f9a3 !important;
-  stroke: #333 !important;
+  stroke: var(--rit-black) !important;
   stroke-width: 1.5px !important;
 }
 
-.loopText {
-  font-size: 16px !important;
-  font-weight: bold !important;
-  fill: #000 !important;
+.labelBox {
+  fill: var(--rit-cool-gray-light) !important;
+  stroke: var(--rit-black) !important;
+  stroke-width: 1.5px !important;
+  rx: 0 !important;
+  ry: 0 !important;
 }
 
-/* Code Block Styling & Wrapping */
+.loopText {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  fill: var(--rit-black) !important;
+}
+
+/* Code Block Styling - Flat, crisp borders */
 pre,
 code {
+  font-family: 'IBM Plex Mono', "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
   font-size: 0.85em;
+  border-radius: 0 !important;
 }
 
 pre {
+  background-color: var(--rit-cool-gray-light);
+  border: 1px solid var(--rit-cool-gray-medium);
+  padding: 1.2em;
   white-space: pre-wrap;
   word-break: break-word;
   overflow-x: auto;
+  border-radius: 0 !important;
 }
 
 pre.sourceCode,
 .sourceCode pre {
   white-space: pre-wrap !important;
   word-break: break-word !important;
+  border-radius: 0 !important;
 }
 
 .sourceCode code,
